@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "635804619402",
+    "project_id": "interviewlogapp",
+    "storage_bucket": "interviewlogapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635804619402:android:505a4e39a0bfa7acdad373",
+        "android_client_info": {
+          "package_name": "com.example.interviewlogapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635804619402-6gqs4mqgd6itec15uba88qs2t22athhr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2G6GL4m4BWXg_FpGsXUyXNgTP9LjhG3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635804619402-6gqs4mqgd6itec15uba88qs2t22athhr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
