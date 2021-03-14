@@ -34,4 +34,9 @@ public class ResearcherPanel extends AppCompatActivity {
 
 
     }
+
+    public void onRecordClick(View view){
+        Intent intent = new Intent(ResearcherPanel.this,Recording.class);
+        startActivity(intent);
+    }
 }
