@@ -1,37 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_marginStart="25dp"
     android:layout_marginLeft="25dp"
     android:layout_marginEnd="25dp"
-    android:layout_marginRight="25dp">
+    android:layout_marginRight="25dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp">
 
     <TextView
         android:id="@+id/partName"
         android:layout_width="135dp"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_vertical"
-        android:text="Participant Name" />
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Participant Name"
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/timeDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="Scheduled Time" />
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Scheduled Time"
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/tag1"
+        style="@style/Widget.AppCompat.TextView.SpinnerItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:text="Tag 1" />
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="#00AFB9"
+        android:text="Tag 1"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tag2"
+        style="@style/Widget.AppCompat.TextView.SpinnerItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal|center_vertical"
-        android:text="Tag 2" />
+        android:layout_marginBottom="5dp"
+        android:autoText="false"
+        android:background="#00AFB9"
+        android:text="Tag 2"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
 </androidx.cardview.widget.CardView>

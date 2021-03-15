@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,11 +85,16 @@ public class ResearcherPanel extends AppCompatActivity {
                 return new partListViewHolder(view);
             }
 
+            @SuppressLint("ResourceAsColor")
             @Override
             protected void onBindViewHolder(@NonNull partListViewHolder holder, int position, @NonNull partListRetrieve model) {
                 holder.partName.setText(model.getPartName());
                 holder.time.setText(model.getTime());
                 holder.tag1.setText(model.getTag1());
+                if(TextUtils.isEmpty(model.getTag2())){
+                    holder.tag2.setBackgroundColor(16777215);
+                    return;
+                }
                 holder.tag2.setText(model.getTag2());
             }
         };
