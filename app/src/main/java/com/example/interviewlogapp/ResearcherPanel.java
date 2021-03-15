@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ResearcherPanel extends AppCompatActivity {
-    Button logoutButton;
+    Button logoutButton, addAppointmentButton;
     String userID, userType;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
@@ -23,6 +23,7 @@ public class ResearcherPanel extends AppCompatActivity {
         setContentView(R.layout.activity_researcher_panel);
 
         logoutButton = findViewById(R.id.logoutButton);
+        addAppointmentButton = findViewById(R.id.addAppointment);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,6 +33,12 @@ public class ResearcherPanel extends AppCompatActivity {
             }
         });
 
+        addAppointmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), create_appointment.class));
+            }
+        });
 
     }
 
