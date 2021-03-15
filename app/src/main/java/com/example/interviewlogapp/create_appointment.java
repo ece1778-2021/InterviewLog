@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -33,34 +34,42 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import javax.annotation.Nonnull;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class create_appointment extends AppCompatActivity {
     String TAG = "create_appointment";
+    String userName;
     TextView currentTimeDisplay;
-    EditText tagEnter;
-    Button backButton, addTag;
+    EditText tagEnter, partNameEnter;
+    Button backButton, addTag, createAppointment;
     StorageReference storageRef;
     FirestoreRecyclerAdapter adapter;
     RecyclerView allTag;
     FirebaseFirestore db;
+    HashMap<String, Boolean> checkedTag = new HashMap<String, Boolean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_appointment);
 
+        userName = getIntent().getStringExtra("researcherName");
         backButton = findViewById(R.id.backButton);
+        createAppointment = findViewById(R.id.createAppointment);
         currentTimeDisplay = findViewById(R.id.currentTimeDisplay);
         currentTimeDisplay.setText(Calendar.getInstance().getTime().toString());
         tagEnter = findViewById(R.id.tagEnter);
+        partNameEnter = findViewById(R.id.nameEnter);
         addTag = findViewById(R.id.addTag);
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
         allTag = findViewById(R.id.allTag);
 
+        Log.d(TAG, "Researcher Name is "+ userName );
         Query query = db.collection("tags");
         FirestoreRecyclerOptions<tagList> options = new FirestoreRecyclerOptions.Builder<tagList>().setQuery(query, tagList.class).build();
         // Test to see if query contains correct information
@@ -78,14 +87,26 @@ public class create_appointment extends AppCompatActivity {
             @Override
             public tagViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tag_list, parent, false);
-                Log.d(TAG, "We are in");
                 return new tagViewHolder(view);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull tagViewHolder holder, int position, @NonNull tagList model) {
                 holder.tag_item.setText(model.getTag());
+                holder.tag_item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (holder.tag_item.isChecked()==false){
+                            checkedTag.remove(model.getTag());
+                        }
+                        else{
+                            checkedTag.put(model.getTag(),holder.tag_item.isChecked());
+                        }
+                        Log.d(TAG, "The item "+ model.getTag()+" is "+holder.tag_item.isChecked());
+                    }
+                });
                 Log.d(TAG, "The tag retrieved is "+ model.getTag());
+
             }
         };
 
@@ -108,6 +129,41 @@ public class create_appointment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ResearcherPanel.class));
+            }
+        });
+
+        createAppointment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String partName = partNameEnter.getText().toString();
+                if(TextUtils.isEmpty(partName)){
+                    partNameEnter.setError("You can't add an empty participant's name!");
+                    return;
+                }
+
+                int counter = 0;
+
+                DocumentReference documentReference = db.collection("participants").document();
+                Map<String, Object> addPartInfo = new HashMap<>();
+                for (String key:checkedTag.keySet()){
+                    counter++;
+                    addPartInfo.put("tag"+counter, key);
+                }
+                if (counter==0){
+                    Toast.makeText(create_appointment.this,"You forgot to add a Tag", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addPartInfo.put("researcherName", userName);
+                addPartInfo.put("partName", partName);
+                addPartInfo.put("time", currentTimeDisplay.getText().toString());
+                documentReference.set(addPartInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG,"The part information is uploaded");
+                        Toast.makeText(create_appointment.this,"Appointment Successfully Created", Toast.LENGTH_SHORT).show();
+                        startActivity((new Intent(getApplicationContext(), ResearcherPanel.class)));
+                    }
+                });
             }
         });
     }

@@ -4,6 +4,15 @@ import android.util.Log;
 
 public class tagList {
     public String tag;
+    public boolean isSelected;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     public tagList(){
     }
