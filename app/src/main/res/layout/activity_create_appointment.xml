@@ -4,16 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:windowSoftInputMode="adjustPan"
     tools:context=".create_appointment">
+
+    <EditText
+        android:id="@+id/tagEnter"
+        android:layout_width="316dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="12dp"
+        android:hint="Enter new tag here"
+        android:textColor="#1A508B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/displayText1" />
 
     <EditText
         android:id="@+id/nameEnter"
         android:layout_width="316dp"
         android:layout_height="46dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
+        android:layout_marginTop="12dp"
+        android:hint="Enter Participant's name here"
+        android:textColor="#1A508B"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameDisplay" />
 
@@ -22,26 +36,27 @@
         style="round"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="44dp"
         android:background="@drawable/roundbutton"
         android:drawableTop="@drawable/back_icon"
         android:textColorLink="#FFFFFF"
         app:backgroundTint="#1A508B"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023"
         app:strokeColor="#FFFFFF" />
 
     <TextView
         android:id="@+id/textDisplay1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:text="Time"
-        android:textColor="#000000"
+        android:textColor="#1A508B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.126"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backButton" />
 
@@ -49,10 +64,10 @@
         android:id="@+id/currentTimeDisplay"
         android:layout_width="316dp"
         android:layout_height="46dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
+        android:layout_marginTop="12dp"
+        android:textColor="#1A508B"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textDisplay1" />
 
@@ -60,11 +75,11 @@
         android:id="@+id/nameDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:text="Participant's Name"
-        android:textColor="#000000"
+        android:textColor="#1A508B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.156"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentTimeDisplay" />
 
@@ -72,19 +87,81 @@
         android:id="@+id/tagView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
         android:layout_marginTop="16dp"
         android:text="Tag"
+        android:textColor="#1A508B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.123"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameEnter" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/allTag"
-        android:layout_width="317dp"
-        android:layout_height="195dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="318dp"
+        android:layout_height="146dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tagView" />
+
+    <TextView
+        android:id="@+id/displayText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Add Tag"
+        android:textColor="#1A508B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/allTag" />
+
+    <Button
+        android:id="@+id/addTag"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:drawableLeft="@drawable/add"
+        android:text="Add"
+        android:textColor="#1A508B"
+        android:textSize="12sp"
+        app:backgroundTint="#FFFFFF"
+        app:iconPadding="6dp"
+        app:iconTint="#1A508B"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.099"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tagEnter"
+        app:layout_constraintVertical_bias="0.007"
+        app:strokeColor="#000000" />
+
+    <Button
+        android:id="@+id/createAppointment"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="114dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginRight="56dp"
+        android:text="Create"
+        app:backgroundTint="#F07167"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTag" />
+
+    <Button
+        android:id="@+id/startRecording"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Start Recording"
+        android:textColor="#F07167"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintEnd_toStartOf="@+id/createAppointment"
+        app:layout_constraintHorizontal_bias="0.643"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTag" />
 </androidx.constraintlayout.widget.ConstraintLayout>

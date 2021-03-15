@@ -32,13 +32,13 @@ public class ResearcherPanel extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), LoginPage.class));
             }
         });
-
         addAppointmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), create_appointment.class));
             }
         });
+
 
     }
 
