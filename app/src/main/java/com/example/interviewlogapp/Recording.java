@@ -31,6 +31,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class Recording extends AppCompatActivity {
         Intent intent = getIntent();
         String userName = intent.getStringExtra("researcherName");
         String partName = intent.getStringExtra("partName");
-        String time = intent.getStringExtra("time");
+        String time = Calendar.getInstance().getTime().toString();
         String tag1 = intent.getStringExtra("tag1");
         String tag2 = intent.getStringExtra("tag2");
         note.put("researcherName", userName);
@@ -173,6 +174,7 @@ public class Recording extends AppCompatActivity {
                             Uri StorageReference = task.getResult();
                             note.put("storageRef",StorageReference.toString());
                             note.put("Total_Clip",clip_amount);
+                            note.put("documentID", randomKey);
                             db.collection("Recordings").document(randomKey).set(note);
                             Intent intent = new Intent(Recording.this,Replay.class);
                             intent.putExtra("record_id", randomKey);

@@ -32,32 +32,28 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Nonnull;
 
-public class ResearcherPanel extends AppCompatActivity {
-    String TAG = "researcher";
-    Button logoutButton, addAppointmentButton, recordingButton;
+public class RecordingPanel extends AppCompatActivity {
+    String TAG = "recording";
+    Button logoutButton, addAppointmentButton, scheduleButton;
     String userID, userType, userName;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
     FirestoreRecyclerAdapter adapter;
-    RecyclerView partList;
-
+    RecyclerView recordList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_researcher_panel);
+        setContentView(R.layout.activity_recording_panel);
 
         db = FirebaseFirestore.getInstance();
         logoutButton = findViewById(R.id.logoutButton);
         addAppointmentButton = findViewById(R.id.addAppointment);
-        recordingButton = findViewById(R.id.allVoiceButton);
+        scheduleButton = findViewById(R.id.scheduleButton);
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
         userID = user.getUid();
-        partList = findViewById(R.id.partList);
+        recordList = findViewById(R.id.recordList);
 
         DocumentReference documentReference = db.collection("users").document(userID);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -68,10 +64,10 @@ public class ResearcherPanel extends AppCompatActivity {
             }
         });
         //.whereEqualTo("researcherName", userName)
-        Query query = db.collection("participants");
-        FirestoreRecyclerOptions<partListRetrieve> options = new FirestoreRecyclerOptions.Builder<partListRetrieve>().setQuery(query, partListRetrieve.class).build();
-        // Test to see if query contains correct information
-        /*query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        Query query = db.collection("Recordings");
+        FirestoreRecyclerOptions<recordListRetrieve> options = new FirestoreRecyclerOptions.Builder<recordListRetrieve>().setQuery(query, recordListRetrieve.class).build();
+        //Test to see if query contains correct information
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
@@ -80,18 +76,10 @@ public class ResearcherPanel extends AppCompatActivity {
                     Log.d(TAG, "retrieved "+ documentSnapshot.getString("time"));
                 }
             }
-        });*/
-        adapter = new FirestoreRecyclerAdapter<partListRetrieve, partListViewHolder>(options) {
-            @NonNull
+        });
+        adapter = new FirestoreRecyclerAdapter<recordListRetrieve, recordListViewHolder>(options) {
             @Override
-            public partListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.participant_list, parent, false);
-                return new partListViewHolder(view);
-            }
-
-            @SuppressLint("ResourceAsColor")
-            @Override
-            protected void onBindViewHolder(@NonNull partListViewHolder holder, int position, @NonNull partListRetrieve model) {
+            protected void onBindViewHolder(@NonNull recordListViewHolder holder, int position, @NonNull recordListRetrieve model) {
                 holder.partName.setText(model.getPartName());
                 holder.time.setText(model.getTime());
                 holder.tag1.setText(model.getTag1());
@@ -100,22 +88,25 @@ public class ResearcherPanel extends AppCompatActivity {
                     return;
                 }
                 holder.tag2.setText(model.getTag2());
-                holder.partCard.setOnClickListener(new View.OnClickListener() {
+                holder.recordCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(), Recording.class);
-                        i.putExtra("researcherName", userName);
-                        i.putExtra("partName", model.getPartName());
-                        i.putExtra("time", model.getTime());
-                        i.putExtra("tag1", model.getTag1());
-                        i.putExtra("tag2", model.getTag2());
-                        startActivity(i);
+                        Intent intent = new Intent(RecordingPanel.this,Replay.class);
+                        intent.putExtra("record_id", model.getDocumentID());
+                        startActivity(intent);
                     }
                 });
             }
+
+            @NonNull
+            @Override
+            public recordListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recording_list, parent, false);
+                return new recordListViewHolder(view);
+            }
         };
-        partList.setLayoutManager(new LinearLayoutManager(this));
-        partList.setAdapter(adapter);
+        recordList.setLayoutManager(new LinearLayoutManager(this));
+        recordList.setAdapter(adapter);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,42 +115,28 @@ public class ResearcherPanel extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), LoginPage.class));
             }
         });
-        addAppointmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), create_appointment.class);
-                i.putExtra("researcherName",userName);
-                startActivity(i);
-            }
-        });
 
-        recordingButton.setOnClickListener(new View.OnClickListener() {
+        scheduleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RecordingPanel.class));
+                startActivity(new Intent(getApplicationContext(), ResearcherPanel.class));
                 overridePendingTransition(0, 0);
             }
         });
     }
-
-    public void onRecordClick(View view){
-        Intent intent = new Intent(ResearcherPanel.this,Recording.class);
-        startActivity(intent);
-    }
-
-    private class partListViewHolder extends RecyclerView.ViewHolder{
+    private class recordListViewHolder extends RecyclerView.ViewHolder{
         private TextView partName, tag1, tag2, time;
-        private CardView partCard;
-        public partListViewHolder(@Nonnull View itemView){
+        private CardView recordCard;
+        public recordListViewHolder(@Nonnull View itemView){
             super(itemView);
             partName = itemView.findViewById(R.id.partName);
             tag1 = itemView.findViewById(R.id.tag1);
             tag2 = itemView.findViewById(R.id.tag2);
             time = itemView.findViewById(R.id.timeDisplay);
-            partCard = itemView.findViewById(R.id.partCard);
+            recordCard = itemView.findViewById(R.id.recordCard);
         }
-    }
 
+    }
     @Override
     protected void onStart() {
         super.onStart();

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".ResearcherPanel">
+
+    <TextView
+        android:id="@+id/bottomBanner"
+        android:layout_width="411dp"
+        android:layout_height="71dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/below_shadow"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log Out"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.081" />
+
+    <TextView
+        android:id="@+id/displayMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="#1A508B"
+        android:text="You are logged in as Researcher"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/scheduleButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+
+        android:layout_marginBottom="4dp"
+        android:drawableTop="@drawable/calendar"
+        android:text="schedule"
+        android:textColor="#0B0B0B"
+        android:textIsSelectable="false"
+        app:backgroundTint="#FFFFFF"
+        app:iconTint="#040404"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/allVoiceButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginBottom="4dp"
+        android:drawableTop="@drawable/voice"
+        android:text="Recordings"
+        android:textColor="#0B0B0B"
+        android:textIsSelectable="false"
+        app:backgroundTint="#FFFFFF"
+        app:iconTint="#040404"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scheduleButton" />
+
+    <Button
+        android:id="@+id/teamButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:drawableTop="@drawable/team_icon"
+        android:text="Teams"
+        android:textColor="#0B0B0B"
+        android:textIsSelectable="false"
+        app:backgroundTint="#FFFFFF"
+        app:iconTint="#040404"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.566"
+        app:layout_constraintStart_toEndOf="@+id/allVoiceButton" />
+
+    <Button
+        android:id="@+id/addAppointment"
+        android:layout_width="51dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="104dp"
+        android:background="@drawable/roundbutton"
+        android:gravity="center_horizontal|top"
+        app:backgroundTint="#F07167"
+        app:icon="@drawable/add"
+        app:iconGravity="top"
+        app:iconPadding="10dp"
+        app:iconSize="30dp"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.927"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recordList"
+        android:layout_width="match_parent"
+        android:layout_height="407dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.441" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
