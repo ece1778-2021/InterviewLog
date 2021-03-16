@@ -22,7 +22,7 @@ public class testActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> clipNames;
-    ArrayList<Integer> clipTimes;
+    ArrayList<String> clipTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class testActivity extends AppCompatActivity {
         String record_id = "d5b638ff-58d6-481c-b2a2-a8c9e6555179";
         clipNames = new ArrayList<>();
         clipTimes = new ArrayList<>();
-        db.collection("Recordings").document(record_id).get()
+        /*db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -41,7 +41,7 @@ public class testActivity extends AppCompatActivity {
                             int clips = documentSnapshot.getLong("Total_Clip").intValue();
                             for (int i=0; i<clips; i++){
                                 tag = documentSnapshot.getString("Clip_Tag"+i);
-                                timeStamp = documentSnapshot.getLong("clip"+i).intValue();
+                                timeStamp = codocumentSnapshot.getLong("clip"+i).intValue();
                                 clipNames.add(tag);
                                 clipTimes.add(timeStamp);
 
@@ -54,6 +54,6 @@ public class testActivity extends AppCompatActivity {
                             clipList.setAdapter(mAdapter);
                         }
                     }
-                });
+                });*/
     }
 }

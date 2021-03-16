@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class clipAdapter extends RecyclerView.Adapter<clipAdapter.ViewHolder> {
     String TAG ="testactivity";
     ArrayList <String> clipName;
-    ArrayList <Integer> clipTime;
-    public clipAdapter(ArrayList<String> clipNames, ArrayList<Integer> clipTimes) {
+    ArrayList <String> clipTime;
+    public clipAdapter(ArrayList<String> clipNames, ArrayList<String> clipTimes) {
         clipName = clipNames;
         clipTime = clipTimes;
     }
@@ -31,7 +31,7 @@ public class clipAdapter extends RecyclerView.Adapter<clipAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull clipAdapter.ViewHolder holder, int position) {
         holder.textClipName.setText(clipName.get(position));
         Log.d(TAG, "Tag "+ position + " is " +clipName.get(position));
-        holder.textClipTime.setText(clipTime.get(position).toString());
+        holder.textClipTime.setText(clipTime.get(position));
     }
 
     @Override

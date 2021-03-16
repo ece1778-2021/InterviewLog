@@ -8,17 +8,14 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -44,7 +41,7 @@ public class Replay extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> clipNames;
-    ArrayList<Integer> clipTimes;
+    ArrayList<String> clipTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +70,10 @@ public class Replay extends AppCompatActivity {
 
                             for (int i=0; i<clip_num; i++){
                                 tag = documentSnapshot.getString("Clip_Tag"+i);
-                                timeStamp = documentSnapshot.getLong("clip"+i).intValue();
+                                String time = convertFormat(documentSnapshot.getLong("clip"+i).intValue());
+
                                 clipNames.add(tag);
-                                clipTimes.add(timeStamp);
+                                clipTimes.add(time);
                                 //Log.d(TAG, "Timestamp "+i + " at " +timeStamp);
                             }
                             Log.d(TAG, "clip names are "+clipNames);
