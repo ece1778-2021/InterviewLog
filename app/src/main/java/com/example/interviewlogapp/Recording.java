@@ -173,7 +173,7 @@ public class Recording extends AppCompatActivity {
                             Uri StorageReference = task.getResult();
                             note.put("storageRef",StorageReference.toString());
                             note.put("Total_Clip",clip_amount);
-                            note.put("DocumentID",randomKey);
+                            note.put("documentID",randomKey);
                             db.collection("Recordings").document(randomKey).set(note);
                             Intent intent = new Intent(Recording.this,Replay.class);
                             intent.putExtra("record_id", randomKey);
