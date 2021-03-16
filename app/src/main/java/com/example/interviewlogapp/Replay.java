@@ -38,7 +38,7 @@ public class Replay extends AppCompatActivity {
 
         Intent intent = getIntent();
         String record_id = intent.getStringExtra("record_id");
-        db.collection("Audio").document(record_id).get()
+        db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -55,6 +55,51 @@ public class Replay extends AppCompatActivity {
                     }
                 });
         //audio = "https://firebasestorage.googleapis.com/v0/b/interviewlogapp.appspot.com/o/Audio%2Ftest.3gp?alt=media&token=ec4b473f-c2e9-4784-8558-d9d20a882a66";
+    }
+    private void setMediaPlayer(){
+        //mediaPlayer.
+        try {
+            mediaPlayer.setDataSource(audio);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        seekBar = findViewById(R.id.seekBar);
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                handler.postDelayed(this, 500);
+            }
+        };
+
+        int d = mediaPlayer.getDuration();
+        String duration = convertFormat(d);
+        TextView PlayerDuration = findViewById(R.id.PlayerDuration);
+        PlayerDuration.setText(duration);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser){
+                    mediaPlayer.seekTo(progress);
+                }
+                int currentPosition = mediaPlayer.getCurrentPosition();
+                TextView PlayerPosition = findViewById(R.id.PlayerPosition);
+                PlayerPosition.setText(convertFormat(currentPosition));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
     private void setMediaPlayer(){
         //mediaPlayer.
