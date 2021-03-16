@@ -3,6 +3,7 @@ package com.example.interviewlogapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +31,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -60,14 +64,13 @@ public class ResearcherPanel extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 userName = value.getString("name");
                 Log.d(TAG, "The name is "+userName);
-
             }
         });
         //.whereEqualTo("researcherName", userName)
         Query query = db.collection("participants");
         FirestoreRecyclerOptions<partListRetrieve> options = new FirestoreRecyclerOptions.Builder<partListRetrieve>().setQuery(query, partListRetrieve.class).build();
         // Test to see if query contains correct information
-        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        /*query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
@@ -76,7 +79,7 @@ public class ResearcherPanel extends AppCompatActivity {
                     Log.d(TAG, "retrieved "+ documentSnapshot.getString("time"));
                 }
             }
-        });
+        });*/
         adapter = new FirestoreRecyclerAdapter<partListRetrieve, partListViewHolder>(options) {
             @NonNull
             @Override
@@ -96,6 +99,18 @@ public class ResearcherPanel extends AppCompatActivity {
                     return;
                 }
                 holder.tag2.setText(model.getTag2());
+                holder.partCard.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), Recording.class);
+                        i.putExtra("researcherName", userName);
+                        i.putExtra("partName", model.getPartName());
+                        i.putExtra("time", model.getTime());
+                        i.putExtra("tag1", model.getTag1());
+                        i.putExtra("tag2", model.getTag2());
+                        startActivity(i);
+                    }
+                });
             }
         };
         partList.setLayoutManager(new LinearLayoutManager(this));
@@ -125,12 +140,14 @@ public class ResearcherPanel extends AppCompatActivity {
 
     private class partListViewHolder extends RecyclerView.ViewHolder{
         private TextView partName, tag1, tag2, time;
+        private CardView partCard;
         public partListViewHolder(@Nonnull View itemView){
             super(itemView);
             partName = itemView.findViewById(R.id.partName);
             tag1 = itemView.findViewById(R.id.tag1);
             tag2 = itemView.findViewById(R.id.tag2);
             time = itemView.findViewById(R.id.timeDisplay);
+            partCard = itemView.findViewById(R.id.partCard);
         }
     }
 
