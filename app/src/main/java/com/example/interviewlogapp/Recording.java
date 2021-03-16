@@ -101,12 +101,13 @@ public class Recording extends AppCompatActivity {
             String offset = convertFormat(pauseOffset);
             String clip_name = "clip"+String.valueOf(clip_amount);
             note.put(clip_name,pauseOffset);
-            clip_amount++;
 
             EditText TextTag = findViewById(R.id.Input_tag);
             String Tag = TextTag.getText().toString();
             String tag_name = "Clip_Tag"+String.valueOf(clip_amount);
             note.put(tag_name,Tag);
+
+            clip_amount++;
 
             TextView txtUsername = findViewById(R.id.textView);
             txtUsername.setText(Tag+" "+ offset);
