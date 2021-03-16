@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -43,12 +44,26 @@ public class Replay extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             audio = documentSnapshot.getString("storageRef");
+                            Log.d("Debugging", audio);
+                            String username = documentSnapshot.getString("researcherName");
+                            TextView Researcher_name = findViewById(R.id.Researcher_name);
+                            Researcher_name.setText(username);
+                            setMediaPlayer();
                         } else {
                             Toast.makeText(Replay.this, "Document does not exist", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
         //audio = "https://firebasestorage.googleapis.com/v0/b/interviewlogapp.appspot.com/o/Audio%2Ftest.3gp?alt=media&token=ec4b473f-c2e9-4784-8558-d9d20a882a66";
+    }
+    private void setMediaPlayer(){
+        //mediaPlayer.
+        try {
+            mediaPlayer.setDataSource(audio);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         seekBar = findViewById(R.id.seekBar);
 
         runnable = new Runnable() {
@@ -58,14 +73,6 @@ public class Replay extends AppCompatActivity {
                 handler.postDelayed(this, 500);
             }
         };
-
-        //mediaPlayer.
-        try {
-            mediaPlayer.setDataSource(audio);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         int d = mediaPlayer.getDuration();
         String duration = convertFormat(d);

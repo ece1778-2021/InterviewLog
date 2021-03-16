@@ -47,7 +47,7 @@ public class Recording extends AppCompatActivity {
     private StorageReference reference;
     private FirebaseFirestore db;
     private Map<String, Object> note = new HashMap<>();
-    FirebaseAuth fAuth;
+    //FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,11 +170,10 @@ public class Recording extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
                             //how to save to database
-
                             Uri StorageReference = task.getResult();
                             note.put("storageRef",StorageReference.toString());
                             note.put("Total_Clip",clip_amount);
-                            note.put("documentID", randomKey);
+                            note.put("DocumentID",randomKey);
                             db.collection("Recordings").document(randomKey).set(note);
                             Intent intent = new Intent(Recording.this,Replay.class);
                             intent.putExtra("record_id", randomKey);
@@ -193,12 +192,4 @@ public class Recording extends AppCompatActivity {
                     }
                 });
     }
-
-    //public void onSaveClick(View view){
-        //String randomKey = UUID.randomUUID().toString();
-        //upload(randomKey);
-        //Intent intent = new Intent(Recording.this,Replay.class);
-        //intent.putExtra("record_id", randomKey);
-        //startActivity(intent);
-    //}
 }
