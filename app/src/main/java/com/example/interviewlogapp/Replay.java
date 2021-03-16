@@ -1,6 +1,8 @@
 package com.example.interviewlogapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -21,6 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -34,14 +37,24 @@ public class Replay extends AppCompatActivity {
     private String audio;
     private String record_id;
     private long clip_num;
+    String TAG = "replay";
+    String tag;
+    int timeStamp;
+    RecyclerView clipList;
+    RecyclerView.LayoutManager mLayoutManager;
+    RecyclerView.Adapter mAdapter;
+    ArrayList<String> clipNames;
+    ArrayList<Integer> clipTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replay);
         db = FirebaseFirestore.getInstance();
-
+        clipList = findViewById(R.id.clipList);
         Intent intent = getIntent();
+        clipNames = new ArrayList<>();
+        clipTimes = new ArrayList<>();
         record_id = intent.getStringExtra("record_id");
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -56,6 +69,21 @@ public class Replay extends AppCompatActivity {
                             //clip_num = Integer.valueOf(documentSnapshot.getString("Total_Clip"));
                             Researcher_name.setText(username);
                             setMediaPlayer();
+
+
+                            for (int i=0; i<clip_num; i++){
+                                tag = documentSnapshot.getString("Clip_Tag"+i);
+                                timeStamp = documentSnapshot.getLong("clip"+i).intValue();
+                                clipNames.add(tag);
+                                clipTimes.add(timeStamp);
+                                //Log.d(TAG, "Timestamp "+i + " at " +timeStamp);
+                            }
+                            Log.d(TAG, "clip names are "+clipNames);
+                            mAdapter = new clipAdapter(clipNames, clipTimes);
+                            mLayoutManager = new LinearLayoutManager(Replay.this);
+                            clipList.setLayoutManager(mLayoutManager);
+                            clipList.setAdapter(mAdapter);
+
                         } else {
                             Toast.makeText(Replay.this, "Document does not exist", Toast.LENGTH_LONG).show();
                         }

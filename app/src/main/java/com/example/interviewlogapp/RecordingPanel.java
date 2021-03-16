@@ -36,7 +36,7 @@ import javax.annotation.Nonnull;
 
 public class RecordingPanel extends AppCompatActivity {
     String TAG = "recording";
-    Button logoutButton, addAppointmentButton, scheduleButton;
+    Button logoutButton, addAppointmentButton, scheduleButton, teamButton;
     String userID, userType, userName;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
@@ -51,6 +51,7 @@ public class RecordingPanel extends AppCompatActivity {
         logoutButton = findViewById(R.id.logoutButton);
         addAppointmentButton = findViewById(R.id.addAppointment);
         scheduleButton = findViewById(R.id.scheduleButton);
+        teamButton = findViewById(R.id.teamButton);
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         recordList = findViewById(R.id.recordList);
@@ -71,7 +72,7 @@ public class RecordingPanel extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
-                    Log.d(TAG, "retrieved "+ documentSnapshot.getString("partName"));
+                    Log.d(TAG, "retrieved "+ documentSnapshot.getString("documentID"));
                     Log.d(TAG, "retrieved "+ documentSnapshot.getString("tag1"));
                     Log.d(TAG, "retrieved "+ documentSnapshot.getString("time"));
                 }
@@ -93,6 +94,7 @@ public class RecordingPanel extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(RecordingPanel.this,Replay.class);
                         intent.putExtra("record_id", model.getDocumentID());
+                        intent.putExtra("audio_location", model.getStorageRef());
                         startActivity(intent);
                     }
                 });
@@ -121,6 +123,13 @@ public class RecordingPanel extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ResearcherPanel.class));
                 overridePendingTransition(0, 0);
+            }
+        });
+
+        teamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), testActivity.class));
             }
         });
     }
