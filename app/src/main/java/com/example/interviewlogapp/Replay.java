@@ -27,7 +27,7 @@ public class Replay extends AppCompatActivity {
     private Handler handler = new Handler();
     private SeekBar seekBar;
     private FirebaseFirestore db;
-    private String audio;
+    private String audio = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class Replay extends AppCompatActivity {
 
         Intent intent = getIntent();
         String record_id = intent.getStringExtra("record_id");
-        db.collection("Audio").document(record_id).get()
+        db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {

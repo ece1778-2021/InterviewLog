@@ -46,7 +46,6 @@ public class Recording extends AppCompatActivity {
     private StorageReference reference;
     private FirebaseFirestore db;
     private Map<String, Object> note = new HashMap<>();
-    final String randomKey = UUID.randomUUID().toString();
     FirebaseAuth fAuth;
 
     @Override
@@ -130,7 +129,6 @@ public class Recording extends AppCompatActivity {
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
-        upload();
     }
 
     private void record() {
@@ -158,7 +156,8 @@ public class Recording extends AppCompatActivity {
         mediaRecorder.start();
     }
 
-    private void upload(){
+    public void onSaveClick(View view){
+        String randomKey = UUID.randomUUID().toString();
         StorageReference filepath = reference.child("Audio"+"/"+randomKey);
         Uri uri = Uri.fromFile(new File(output_file));
         filepath.putFile(uri).
@@ -175,6 +174,9 @@ public class Recording extends AppCompatActivity {
                             note.put("storageRef",StorageReference.toString());
                             note.put("Total_Clip",clip_amount);
                             db.collection("Recordings").document(randomKey).set(note);
+                            Intent intent = new Intent(Recording.this,Replay.class);
+                            intent.putExtra("record_id", randomKey);
+                            startActivity(intent);
                         } else {
                             Toast.makeText(Recording.this, "Upload Error", Toast.LENGTH_LONG).show();
                         }
@@ -190,9 +192,11 @@ public class Recording extends AppCompatActivity {
                 });
     }
 
-    public void onSaveClick(View view){
-        Intent intent = new Intent(Recording.this,Replay.class);
-        intent.putExtra("record_id", randomKey);
-        startActivity(intent);
-    }
+    //public void onSaveClick(View view){
+        //String randomKey = UUID.randomUUID().toString();
+        //upload(randomKey);
+        //Intent intent = new Intent(Recording.this,Replay.class);
+        //intent.putExtra("record_id", randomKey);
+        //startActivity(intent);
+    //}
 }
