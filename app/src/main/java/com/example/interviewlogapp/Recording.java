@@ -31,6 +31,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -46,7 +47,6 @@ public class Recording extends AppCompatActivity {
     private StorageReference reference;
     private FirebaseFirestore db;
     private Map<String, Object> note = new HashMap<>();
-    final String randomKey = UUID.randomUUID().toString();
     FirebaseAuth fAuth;
 
     @Override
@@ -60,7 +60,7 @@ public class Recording extends AppCompatActivity {
         Intent intent = getIntent();
         String userName = intent.getStringExtra("researcherName");
         String partName = intent.getStringExtra("partName");
-        String time = intent.getStringExtra("time");
+        String time = Calendar.getInstance().getTime().toString();
         String tag1 = intent.getStringExtra("tag1");
         String tag2 = intent.getStringExtra("tag2");
         note.put("researcherName", userName);
@@ -130,7 +130,6 @@ public class Recording extends AppCompatActivity {
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
-        upload();
     }
 
     private void record() {
@@ -158,7 +157,8 @@ public class Recording extends AppCompatActivity {
         mediaRecorder.start();
     }
 
-    private void upload(){
+    public void onSaveClick(View view){
+        String randomKey = UUID.randomUUID().toString();
         StorageReference filepath = reference.child("Audio"+"/"+randomKey);
         Uri uri = Uri.fromFile(new File(output_file));
         filepath.putFile(uri).
@@ -174,7 +174,11 @@ public class Recording extends AppCompatActivity {
                             Uri StorageReference = task.getResult();
                             note.put("storageRef",StorageReference.toString());
                             note.put("Total_Clip",clip_amount);
+                            note.put("documentID", randomKey);
                             db.collection("Recordings").document(randomKey).set(note);
+                            Intent intent = new Intent(Recording.this,Replay.class);
+                            intent.putExtra("record_id", randomKey);
+                            startActivity(intent);
                         } else {
                             Toast.makeText(Recording.this, "Upload Error", Toast.LENGTH_LONG).show();
                         }
@@ -190,9 +194,11 @@ public class Recording extends AppCompatActivity {
                 });
     }
 
-    public void onSaveClick(View view){
-        Intent intent = new Intent(Recording.this,Replay.class);
-        intent.putExtra("record_id", randomKey);
-        startActivity(intent);
-    }
+    //public void onSaveClick(View view){
+        //String randomKey = UUID.randomUUID().toString();
+        //upload(randomKey);
+        //Intent intent = new Intent(Recording.this,Replay.class);
+        //intent.putExtra("record_id", randomKey);
+        //startActivity(intent);
+    //}
 }
