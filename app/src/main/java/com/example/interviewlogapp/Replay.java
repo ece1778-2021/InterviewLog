@@ -27,6 +27,7 @@ public class Replay extends AppCompatActivity {
     private Handler handler = new Handler();
     private SeekBar seekBar;
     private FirebaseFirestore db;
+    private String audio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,38 +37,28 @@ public class Replay extends AppCompatActivity {
 
         Intent intent = getIntent();
         String record_id = intent.getStringExtra("record_id");
-        //String audio_copy;
-        db.collection("Photos").document(record_id).get()
+        db.collection("Audio").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists()){
-                            String audio = documentSnapshot.getString("storageRef");
-                            set_media_player(audio);
-                        }else{
+                        if (documentSnapshot.exists()) {
+                            audio = documentSnapshot.getString("storageRef");
+                        } else {
                             Toast.makeText(Replay.this, "Document does not exist", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-
+        //audio = "https://firebasestorage.googleapis.com/v0/b/interviewlogapp.appspot.com/o/Audio%2Ftest.3gp?alt=media&token=ec4b473f-c2e9-4784-8558-d9d20a882a66";
         seekBar = findViewById(R.id.seekBar);
 
         runnable = new Runnable() {
             @Override
             public void run() {
                 seekBar.setProgress(mediaPlayer.getCurrentPosition());
-                handler.postDelayed(this,500);
+                handler.postDelayed(this, 500);
             }
         };
 
-        int d = mediaPlayer.getDuration();
-        String duration = convertFormat(d);
-
-        TextView PlayerDuration = findViewById(R.id.PlayerDuration);
-        PlayerDuration.setText(duration);
-    }
-
-    private void set_media_player(String audio){
         //mediaPlayer.
         try {
             mediaPlayer.setDataSource(audio);
@@ -76,22 +67,66 @@ public class Replay extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        int d = mediaPlayer.getDuration();
+        String duration = convertFormat(d);
+        TextView PlayerDuration = findViewById(R.id.PlayerDuration);
+        PlayerDuration.setText(duration);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser){
+                    mediaPlayer.seekTo(progress);
+                }
+                int currentPosition = mediaPlayer.getCurrentPosition();
+                TextView PlayerPosition = findViewById(R.id.PlayerPosition);
+                PlayerPosition.setText(convertFormat(currentPosition));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
-    private String convertFormat(int duration){
+    private String convertFormat(int duration) {
         return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 
-    public void onReplayClick(View view){
-        if(view.getId() == R.id.music_play_button){
+    public void onReplayClick(View view) {
+        if (view.getId() == R.id.music_play_button) {
             mediaPlayer.start();
             seekBar.setMax(mediaPlayer.getDuration());
-            handler.postDelayed(runnable,0);
-        }else if(view.getId() == R.id.music_stop_button){
+            handler.postDelayed(runnable, 0);
+        } else if (view.getId() == R.id.music_stop_button) {
             mediaPlayer.pause();
             handler.removeCallbacks(runnable);
-        }
+        } else if (view.getId() == R.id.play_forward_button) {
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            int duration = mediaPlayer.getDuration();
+            if (mediaPlayer.isPlaying() && duration != currentPosition) {
+                currentPosition = currentPosition + 5000;
+                TextView PlayerPosition = findViewById(R.id.PlayerPosition);
+                PlayerPosition.setText(convertFormat(currentPosition));
+                mediaPlayer.seekTo(currentPosition);
+            }
+        } else if (view.getId() == R.id.play_back_button) {
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            //int duration = mediaPlayer.getDuration();
+            if (mediaPlayer.isPlaying() && currentPosition > 5000) {
+                currentPosition = currentPosition - 5000;
+                TextView PlayerPosition = findViewById(R.id.PlayerPosition);
+                PlayerPosition.setText(convertFormat(currentPosition));
+                mediaPlayer.seekTo(currentPosition);
 
+            }
+        }
     }
 }
