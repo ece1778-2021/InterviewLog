@@ -185,4 +185,10 @@ public class Replay extends AppCompatActivity {
             db.collection("Recordings").document(record_id).update(note);
         }
     }
+
+    public void onBackClick(View view) {
+        Intent intent = new Intent(Replay.this,RecordingPanel.class);
+        startActivity(intent);
+
+    }
 }

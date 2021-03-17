@@ -193,4 +193,9 @@ public class Recording extends AppCompatActivity {
                     }
                 });
     }
+
+    public void onBackClick(View view) {
+        Intent intent = new Intent(Recording.this,ResearcherPanel.class);
+        startActivity(intent);
+    }
 }
