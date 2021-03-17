@@ -45,7 +45,7 @@ public class create_appointment extends AppCompatActivity {
     String userName;
     TextView currentTimeDisplay;
     EditText tagEnter, partNameEnter;
-    Button backButton, addTag, createAppointment;
+    Button backButton, addTag, createAppointment, startRecordingButton;
     StorageReference storageRef;
     FirestoreRecyclerAdapter adapter;
     RecyclerView allTag;
@@ -61,6 +61,7 @@ public class create_appointment extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         createAppointment = findViewById(R.id.createAppointment);
         currentTimeDisplay = findViewById(R.id.currentTimeDisplay);
+        startRecordingButton = findViewById(R.id.startRecording);
         currentTimeDisplay.setText(Calendar.getInstance().getTime().toString());
         tagEnter = findViewById(R.id.tagEnter);
         partNameEnter = findViewById(R.id.nameEnter);
@@ -162,6 +163,47 @@ public class create_appointment extends AppCompatActivity {
                         Log.d(TAG,"The part information is uploaded");
                         Toast.makeText(create_appointment.this,"Appointment Successfully Created", Toast.LENGTH_SHORT).show();
                         startActivity((new Intent(getApplicationContext(), ResearcherPanel.class)));
+                    }
+                });
+            }
+        });
+
+        startRecordingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String partName = partNameEnter.getText().toString();
+                if(TextUtils.isEmpty(partName)){
+                    partNameEnter.setError("You can't add an empty participant's name!");
+                    return;
+                }
+
+                int counter = 0;
+
+                DocumentReference documentReference = db.collection("participants").document();
+                Map<String, Object> addPartInfo = new HashMap<>();
+                for (String key:checkedTag.keySet()){
+                    counter++;
+                    addPartInfo.put("tag"+counter, key);
+                }
+                if (counter==0){
+                    Toast.makeText(create_appointment.this,"You forgot to add a Tag", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addPartInfo.put("researcherName", userName);
+                addPartInfo.put("partName", partName);
+                addPartInfo.put("time", currentTimeDisplay.getText().toString());
+                documentReference.set(addPartInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG,"The part information is uploaded");
+                        Toast.makeText(create_appointment.this,"Participant information Created, now recording", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getApplicationContext(), Recording.class);
+                        i.putExtra("researcherName", userName);
+                        i.putExtra("partName", partName);
+                        i.putExtra("time", currentTimeDisplay.getText().toString());
+                        i.putExtra("tag1", addPartInfo.get("tag1").toString());
+                        i.putExtra("tag1", addPartInfo.get("tag2").toString());
+                        startActivity(i);
                     }
                 });
             }

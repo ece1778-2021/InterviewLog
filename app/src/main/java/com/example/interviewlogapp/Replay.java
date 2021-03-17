@@ -183,6 +183,10 @@ public class Replay extends AppCompatActivity {
             clip_num++;
             note.put("Total_Clip",clip_num);
             db.collection("Recordings").document(record_id).update(note);
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0, 0);
         }
     }
 

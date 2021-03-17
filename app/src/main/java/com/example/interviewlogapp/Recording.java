@@ -68,6 +68,7 @@ public class Recording extends AppCompatActivity {
         note.put("time", time);
         note.put("tag1", tag1);
         note.put("tag2", tag2);
+
     }
 
     private String convertFormat(long duration){

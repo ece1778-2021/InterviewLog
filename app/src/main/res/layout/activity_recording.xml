@@ -44,11 +44,10 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="179dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
         android:layout_marginLeft="116dp"
         android:layout_marginBottom="32dp"
-        android:text="TextView"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/time_count"
         app:layout_constraintStart_toStartOf="parent" />
@@ -80,10 +79,10 @@
     <EditText
         android:id="@+id/Input_tag"
         android:layout_width="185dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="120dp"
-        android:layout_marginLeft="120dp"
-        android:layout_marginBottom="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="136dp"
+        android:layout_marginLeft="136dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Tag"
         android:inputType="textPersonName"
