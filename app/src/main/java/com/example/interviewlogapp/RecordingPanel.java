@@ -132,6 +132,15 @@ public class RecordingPanel extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), testActivity.class));
             }
         });
+
+        addAppointmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), create_appointment.class);
+                i.putExtra("researcherName",userName);
+                startActivity(i);
+            }
+        });
     }
     private class recordListViewHolder extends RecyclerView.ViewHolder{
         private TextView partName, tag1, tag2, time;

@@ -28,11 +28,10 @@ public class testActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        clipList = findViewById(R.id.clipListTest);
+
         db = FirebaseFirestore.getInstance();
-        String record_id = "d5b638ff-58d6-481c-b2a2-a8c9e6555179";
-        clipNames = new ArrayList<>();
-        clipTimes = new ArrayList<>();
+
+
         /*db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override

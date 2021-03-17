@@ -17,7 +17,8 @@
         <activity
             android:name=".create_appointment"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".Replay" />
+        <activity android:name=".Replay"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".Recording" />
         <activity android:name=".UserPanel" />
         <activity android:name=".ResearcherPanel" />
