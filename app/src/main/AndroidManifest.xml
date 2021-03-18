@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InterviewLogApp">
-        <activity android:name=".RecordingPanel"></activity>
+        <activity android:name=".Replay_Command"></activity>
+        <activity android:name=".RecordingPanel"/>
         <activity android:name=".testActivity" />
         <activity
             android:name=".create_appointment"
