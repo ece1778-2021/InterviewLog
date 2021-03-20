@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/partCard"
+    android:id="@+id/sharedRecordCard"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_marginStart="25dp"
@@ -13,7 +13,7 @@
     app:cardElevation="5dp">
 
     <TextView
-        android:id="@+id/partName"
+        android:id="@+id/sharePartName"
         android:layout_width="135dp"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_vertical"
@@ -24,7 +24,7 @@
         android:textColor="#000000" />
 
     <TextView
-        android:id="@+id/timeDisplay"
+        android:id="@+id/shareTimeDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -35,7 +35,7 @@
         android:textColor="#000000" />
 
     <TextView
-        android:id="@+id/tag1"
+        android:id="@+id/shareTag1"
         style="@style/Widget.AppCompat.TextView.SpinnerItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,11 +49,11 @@
         android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/tag2"
+        android:id="@+id/shareTag2"
         style="@style/Widget.AppCompat.TextView.SpinnerItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center|center_vertical"
+        android:layout_gravity="bottom|center_horizontal|center_vertical"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
@@ -62,20 +62,4 @@
         android:text="Tag 2"
         android:textColor="#FFFFFF"
         android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/status"
-        style="@style/Widget.AppCompat.TextView.SpinnerItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center|right|center_vertical"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:autoText="false"
-        android:background="#00AFB9"
-        android:text="Status Label"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp" />
-
 </androidx.cardview.widget.CardView>

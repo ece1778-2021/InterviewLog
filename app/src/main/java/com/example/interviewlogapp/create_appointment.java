@@ -129,7 +129,9 @@ public class create_appointment extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ResearcherPanel.class));
+                Intent i = new Intent(getApplicationContext(), ResearcherPanel.class);
+                i.putExtra("researcherName",userName);
+                startActivity(i);
             }
         });
 
@@ -157,12 +159,16 @@ public class create_appointment extends AppCompatActivity {
                 addPartInfo.put("researcherName", userName);
                 addPartInfo.put("partName", partName);
                 addPartInfo.put("time", currentTimeDisplay.getText().toString());
+                addPartInfo.put("status", "Not Started");
+                addPartInfo.put("doc_id", documentReference.getId());
                 documentReference.set(addPartInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG,"The part information is uploaded");
                         Toast.makeText(create_appointment.this,"Appointment Successfully Created", Toast.LENGTH_SHORT).show();
-                        startActivity((new Intent(getApplicationContext(), ResearcherPanel.class)));
+                        Intent i = new Intent(getApplicationContext(), ResearcherPanel.class);
+                        i.putExtra("researcherName",userName);
+                        startActivity(i);
                     }
                 });
             }
@@ -192,6 +198,7 @@ public class create_appointment extends AppCompatActivity {
                 addPartInfo.put("researcherName", userName);
                 addPartInfo.put("partName", partName);
                 addPartInfo.put("time", currentTimeDisplay.getText().toString());
+                addPartInfo.put("status", "Not Started");
                 documentReference.set(addPartInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

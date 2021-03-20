@@ -31,7 +31,7 @@ import android.widget.Toast;
 public class LoginPage extends AppCompatActivity {
     EditText usernameInput, passwordInput;
     Button loginButton;
-    String userID, userType;
+    String userID, userType,userName;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
     String TAG = "LoginPanel";
@@ -101,10 +101,12 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 userType=value.getString("userType");
-                Log.d(TAG, "The user type is "+ userType + " and userID is "+ userID);
-
+                userName = value.getString("name");
+                Log.d(TAG, "The user type is "+ userType + " and user name is "+ userName);
                 if (userType.equals("researcher")){
-                    startActivity(new Intent(getApplicationContext(), ResearcherPanel.class));
+                    Intent intent = new Intent(LoginPage.this,ResearcherPanel.class);
+                    intent.putExtra("researcherName", userName);
+                    startActivity(intent);
                     finish();
                 }
                 else if (userType.equals("user")){

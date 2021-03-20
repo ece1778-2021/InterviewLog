@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,7 +43,7 @@ import javax.annotation.Nonnull;
 public class ResearcherPanel extends AppCompatActivity {
     String TAG = "researcher";
     Button logoutButton, addAppointmentButton, recordingButton, teamButton;
-    String userID, userType, userName;
+    String userID, userTeam, userName, part_id;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
     FirestoreRecyclerAdapter adapter;
@@ -50,7 +53,7 @@ public class ResearcherPanel extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_researcher_panel);
-
+        userName = getIntent().getStringExtra("researcherName");
         db = FirebaseFirestore.getInstance();
         logoutButton = findViewById(R.id.logoutButton);
         addAppointmentButton = findViewById(R.id.addAppointment);
@@ -60,16 +63,20 @@ public class ResearcherPanel extends AppCompatActivity {
         userID = user.getUid();
         partList = findViewById(R.id.partList);
 
-        DocumentReference documentReference = db.collection("users").document(userID);
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        Log.d(TAG, "user name at schedule page is "+userName);
+        db.collection("team").whereEqualTo("researcherName", userName).get().addOnCompleteListener(this, new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                userName = value.getString("name");
-                Log.d(TAG, "The name is "+userName);
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        userTeam = document.getString("teamName");
+                        Log.d(TAG, "Researcher Team is " + userTeam);
+                    }
+                }
             }
         });
-        //.whereEqualTo("researcherName", userName)
-        Query query = db.collection("participants");
+
+        Query query = db.collection("participants").whereEqualTo("researcherName", userName);
         FirestoreRecyclerOptions<partListRetrieve> options = new FirestoreRecyclerOptions.Builder<partListRetrieve>().setQuery(query, partListRetrieve.class).build();
         // Test to see if query contains correct information
         /*query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -101,20 +108,35 @@ public class ResearcherPanel extends AppCompatActivity {
                     return;
                 }
                 holder.tag2.setText(model.getTag2());
-                holder.partCard.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(), Recording.class);
-                        i.putExtra("researcherName", userName);
-                        i.putExtra("partName", model.getPartName());
-                        i.putExtra("time", model.getTime());
-                        i.putExtra("tag1", model.getTag1());
-                        i.putExtra("tag2", model.getTag2());
-                        startActivity(i);
-                    }
-                });
+
+                String currentStatus = model.getStatus();
+                Log.d(TAG, currentStatus);
+                holder.status.setText(currentStatus);
+                if (currentStatus.equals("Not Started")){
+                    holder.status.setBackgroundColor(Color.RED);
+                    holder.partCard.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(getApplicationContext(), Recording.class);
+                            i.putExtra("researcherName", userName);
+                            i.putExtra("partName", model.getPartName());
+                            i.putExtra("time", model.getTime());
+                            i.putExtra("tag1", model.getTag1());
+                            i.putExtra("tag2", model.getTag2());
+                            i.putExtra("part_id", model.getDoc_id());
+                            startActivity(i);
+                        }
+                    });
+                }
+                else{
+                    holder.status.setBackgroundColor(65280);
+                    holder.status.setBackgroundColor(Color.GREEN);
+
+                }
             }
         };
+
+
         partList.setLayoutManager(new LinearLayoutManager(this));
         partList.setAdapter(adapter);
 
@@ -137,7 +159,9 @@ public class ResearcherPanel extends AppCompatActivity {
         recordingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RecordingPanel.class));
+                Intent i = new Intent(getApplicationContext(), RecordingPanel.class);
+                i.putExtra("researcherName", userName);
+                startActivity(i);
                 overridePendingTransition(0, 0);
             }
         });
@@ -145,9 +169,18 @@ public class ResearcherPanel extends AppCompatActivity {
         teamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), testActivity.class));
+                Intent i = new Intent(getApplicationContext(), team_panel.class);
+                i.putExtra("researcherName",userName);
+                i.putExtra("userTeam", userTeam);
+                startActivity(i);
             }
         });
+    }
+    public void test(View view){
+        Intent i = new Intent(getApplicationContext(), testActivity.class);
+        i.putExtra("researcherName",userName);
+        i.putExtra("userTeam", userTeam);
+        startActivity(i);
     }
 
     public void onRecordClick(View view){
@@ -156,7 +189,7 @@ public class ResearcherPanel extends AppCompatActivity {
     }
 
     private class partListViewHolder extends RecyclerView.ViewHolder{
-        private TextView partName, tag1, tag2, time;
+        private TextView partName, tag1, tag2, time, status;
         private CardView partCard;
         public partListViewHolder(@Nonnull View itemView){
             super(itemView);
@@ -164,6 +197,7 @@ public class ResearcherPanel extends AppCompatActivity {
             tag1 = itemView.findViewById(R.id.tag1);
             tag2 = itemView.findViewById(R.id.tag2);
             time = itemView.findViewById(R.id.timeDisplay);
+            status = itemView.findViewById(R.id.status);
             partCard = itemView.findViewById(R.id.partCard);
         }
     }

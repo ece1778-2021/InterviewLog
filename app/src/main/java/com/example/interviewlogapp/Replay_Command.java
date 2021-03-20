@@ -52,6 +52,7 @@ public class Replay_Command extends AppCompatActivity {
     private FirebaseFirestore db;
     private String audio;
     private String record_id;
+    String userName;
     private int comment_point;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class Replay_Command extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
+        userName = intent.getStringExtra("userName");
         record_id = intent.getStringExtra("record_id");
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -177,12 +179,14 @@ public class Replay_Command extends AppCompatActivity {
 
         finish();
         overridePendingTransition(0, 0);
+        getIntent().putExtra("researcherName",userName);
         startActivity(getIntent());
         overridePendingTransition(0, 0);
     }
 
     public void onBackClick(View view) {
         Intent intent = new Intent(Replay_Command.this,RecordingPanel.class);
+        intent.putExtra("researcherName",userName);
         startActivity(intent);
     }
 

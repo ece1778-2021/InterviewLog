@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,8 +39,8 @@ import javax.annotation.Nonnull;
 
 public class RecordingPanel extends AppCompatActivity {
     String TAG = "recording";
-    Button logoutButton, addAppointmentButton, scheduleButton, teamButton;
-    String userID, userType, userName;
+    Button logoutButton, scheduleButton, teamButton;
+    String userID, userType, userName, userTeam;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
     FirestoreRecyclerAdapter adapter;
@@ -48,27 +51,31 @@ public class RecordingPanel extends AppCompatActivity {
         setContentView(R.layout.activity_recording_panel);
 
         db = FirebaseFirestore.getInstance();
+        userName = getIntent().getStringExtra("researcherName");
         logoutButton = findViewById(R.id.logoutButton);
-        addAppointmentButton = findViewById(R.id.addAppointment);
         scheduleButton = findViewById(R.id.scheduleButton);
         teamButton = findViewById(R.id.teamButton);
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         recordList = findViewById(R.id.recordList);
 
-        DocumentReference documentReference = db.collection("users").document(userID);
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        db.collection("team").whereEqualTo("researcherName", userName).get().addOnCompleteListener(this, new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                userName = value.getString("name");
-                Log.d(TAG, "The name is "+userName);
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        userTeam = document.getString("teamName");
+                        Log.d(TAG, "Researcher Team is " + userTeam);
+                    }
+                }
             }
         });
+
         //.whereEqualTo("researcherName", userName)
-        Query query = db.collection("Recordings");
+        Query query = db.collection("Recordings").whereEqualTo("researcherName", userName);
         FirestoreRecyclerOptions<recordListRetrieve> options = new FirestoreRecyclerOptions.Builder<recordListRetrieve>().setQuery(query, recordListRetrieve.class).build();
         //Test to see if query contains correct information
-        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        /*query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
@@ -77,7 +84,7 @@ public class RecordingPanel extends AppCompatActivity {
                     Log.d(TAG, "retrieved "+ documentSnapshot.getString("time"));
                 }
             }
-        });
+        });*/
         adapter = new FirestoreRecyclerAdapter<recordListRetrieve, recordListViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull recordListViewHolder holder, int position, @NonNull recordListRetrieve model) {
@@ -85,7 +92,7 @@ public class RecordingPanel extends AppCompatActivity {
                 holder.time.setText(model.getTime());
                 holder.tag1.setText(model.getTag1());
                 if(TextUtils.isEmpty(model.getTag2())){
-                    holder.tag2.setBackgroundColor(16777215);
+                    holder.tag2.setBackgroundColor(Color.WHITE);
                     return;
                 }
                 holder.tag2.setText(model.getTag2());
@@ -94,6 +101,7 @@ public class RecordingPanel extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(RecordingPanel.this,Replay_Command.class);
                         intent.putExtra("record_id", model.getDocumentID());
+                        intent.putExtra("userName", userName);
                         intent.putExtra("audio_location", model.getStorageRef());
                         startActivity(intent);
                     }
@@ -121,7 +129,9 @@ public class RecordingPanel extends AppCompatActivity {
         scheduleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ResearcherPanel.class));
+                Intent i = new Intent(getApplicationContext(), ResearcherPanel.class);
+                i.putExtra("researcherName", userName);
+                startActivity(i);
                 overridePendingTransition(0, 0);
             }
         });
@@ -129,18 +139,13 @@ public class RecordingPanel extends AppCompatActivity {
         teamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), testActivity.class));
-            }
-        });
-
-        addAppointmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), create_appointment.class);
+                Intent i = new Intent(getApplicationContext(), team_panel.class);
                 i.putExtra("researcherName",userName);
+                i.putExtra("userTeam", userTeam);
                 startActivity(i);
             }
         });
+
     }
     private class recordListViewHolder extends RecyclerView.ViewHolder{
         private TextView partName, tag1, tag2, time;

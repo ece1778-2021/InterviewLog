@@ -1,17 +1,35 @@
 package com.example.interviewlogapp;
 
 public class partListRetrieve {
-    public String tag1, tag2, partName, time, researcherName;
+    public String tag1, tag2, partName, time, researcherName, doc_id, status;
 
     public partListRetrieve(){
     }
 
-    public partListRetrieve(String tag1, String tag2, String partName, String time, String researcherName) {
+    public partListRetrieve(String tag1, String tag2, String partName, String time, String researcherName, String status, String doc_id) {
         this.tag1 = tag1;
         this.tag2 = tag2;
         this.partName = partName;
         this.time = time;
         this.researcherName = researcherName;
+        this.status = status;
+        this.doc_id=doc_id;
+    }
+
+    public String getDoc_id() {
+        return doc_id;
+    }
+
+    public void setDoc_id(String doc_id) {
+        this.doc_id = doc_id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getResearcherName() {

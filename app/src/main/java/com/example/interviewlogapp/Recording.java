@@ -24,15 +24,20 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +53,8 @@ public class Recording extends AppCompatActivity {
     private FirebaseFirestore db;
     private Map<String, Object> note = new HashMap<>();
     //FirebaseAuth fAuth;
-
+    String userName, part_id, partName, time, tag1, tag2;
+    List<String> userTeams = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,17 +64,29 @@ public class Recording extends AppCompatActivity {
         reference = storage.getReference();
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        String userName = intent.getStringExtra("researcherName");
-        String partName = intent.getStringExtra("partName");
-        String time = Calendar.getInstance().getTime().toString();
-        String tag1 = intent.getStringExtra("tag1");
-        String tag2 = intent.getStringExtra("tag2");
+        userName = intent.getStringExtra("researcherName");
+        part_id = intent.getStringExtra("part_id");
+
+
+        partName = intent.getStringExtra("partName");
+        time = Calendar.getInstance().getTime().toString();
+        tag1 = intent.getStringExtra("tag1");
+        tag2 = intent.getStringExtra("tag2");
         note.put("researcherName", userName);
         note.put("partName", partName);
         note.put("time", time);
         note.put("tag1", tag1);
         note.put("tag2", tag2);
-
+        db.collection("team").whereEqualTo("researcherName", userName).get().addOnCompleteListener(this, new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        userTeams.add(document.getString("teamName"));
+                    }
+                }
+            }
+        });
     }
 
     private String convertFormat(long duration){
@@ -173,12 +191,24 @@ public class Recording extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //how to save to database
                             Uri StorageReference = task.getResult();
+                            db.collection("participants").document(part_id).update("status", "Completed");
                             note.put("storageRef",StorageReference.toString());
                             note.put("Total_Clip",clip_amount);
                             note.put("documentID",randomKey);
                             db.collection("Recordings").document(randomKey).set(note);
-                            Intent intent = new Intent(Recording.this,Replay.class);
+                            Map<String, Object> sharedInfo = new HashMap<>();
+                            for (int i = 0; i<userTeams.size();i++){
+                                sharedInfo.put("documentID", randomKey);
+                                sharedInfo.put("partName", partName);
+                                sharedInfo.put("tag1",tag1);
+                                sharedInfo.put("tag2",tag2);
+                                sharedInfo.put("teamName",userTeams.get(i));
+                                sharedInfo.put("time",time);
+                                db.collection("sharedRecordings").document().set(sharedInfo);
+                            }
+                            Intent intent = new Intent(Recording.this,RecordingPanel.class);
                             intent.putExtra("record_id", randomKey);
+                            intent.putExtra("researcherName",userName);
                             startActivity(intent);
                         } else {
                             Toast.makeText(Recording.this, "Upload Error", Toast.LENGTH_LONG).show();
@@ -196,7 +226,8 @@ public class Recording extends AppCompatActivity {
     }
 
     public void onBackClick(View view) {
-        Intent intent = new Intent(Recording.this,ResearcherPanel.class);
-        startActivity(intent);
+        Intent i = new Intent(getApplicationContext(), ResearcherPanel.class);
+        i.putExtra("researcherName",userName);
+        startActivity(i);
     }
 }
