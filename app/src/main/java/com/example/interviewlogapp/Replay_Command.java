@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,16 +14,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -34,7 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +50,17 @@ public class Replay_Command extends AppCompatActivity {
     private String record_id;
     String userName;
     private int comment_point;
+    private ArrayList<Long> Time_List = new ArrayList<Long>();
+    private long clip_num;
+    RecyclerView clipList;
+    RecyclerView.LayoutManager mLayoutManager;
+    RecyclerView.Adapter mAdapter;
+    ArrayList<String> clipNames;
+    ArrayList<String> clipTimes;
+    String TAG = "replay";
+    String tag;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +70,10 @@ public class Replay_Command extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("userName");
         record_id = intent.getStringExtra("record_id");
+        clipList = findViewById(R.id.clipList);
+        clipNames = new ArrayList<>();
+        clipTimes = new ArrayList<>();
+
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -70,8 +81,19 @@ public class Replay_Command extends AppCompatActivity {
                         if (documentSnapshot.exists()) {
                             audio = documentSnapshot.getString("storageRef");
                             String username = documentSnapshot.getString("partName");
-                            //TextView Researcher_name = findViewById(R.id.Researcher_name);
-                            //Researcher_name.setText(username);
+                            clip_num = documentSnapshot.getLong("Total_Clip");
+                            for (int i=0; i<clip_num; i++){
+                                tag = documentSnapshot.getString("Clip_Tag"+i);
+                                String time = convertFormat(documentSnapshot.getLong("clip"+i).intValue());
+                                clipNames.add(tag);
+                                clipTimes.add(time);
+                            }
+                            Log.d(TAG, "clip names are "+clipNames);
+                            mAdapter = new clipAdapter(clipNames, clipTimes);
+                            mLayoutManager = new LinearLayoutManager(Replay_Command.this);
+                            clipList.setLayoutManager(mLayoutManager);
+                            clipList.setAdapter(mAdapter);
+
                             setMediaPlayer();
                         } else {
                             Toast.makeText(Replay_Command.this, "Document does not exist", Toast.LENGTH_LONG).show();
@@ -81,6 +103,20 @@ public class Replay_Command extends AppCompatActivity {
 
         GridView gridview = findViewById(R.id.comment_grid);
         setgridview(gridview);
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //intent.putExtra("imageId",documentlist.get(position));
+                Long t = Time_List.get(position);
+                int postion = t.intValue();
+                //Log.d("Debugging", String.valueOf(t));
+                if (mediaPlayer.isPlaying()) {
+                    TextView PlayerPosition = findViewById(R.id.PlayerPosition);
+                    PlayerPosition.setText(convertFormat(postion));
+                    mediaPlayer.seekTo(postion);
+                }
+            }
+        });
     }
 
     private void setMediaPlayer(){
@@ -217,6 +253,7 @@ public class Replay_Command extends AppCompatActivity {
                             UserNames.add("Username");
                             Timestamp.add(stamp);
                             Comments.add(comment);
+                            Time_List.add(time);
                         }
                     GridCommentAdapter adapter = new GridCommentAdapter(Timestamp, UserNames,Comments,3,Replay_Command.this);
                     gridview.setAdapter(adapter);
@@ -274,5 +311,4 @@ public class Replay_Command extends AppCompatActivity {
             return convertView;
         }
     }
-
 }
