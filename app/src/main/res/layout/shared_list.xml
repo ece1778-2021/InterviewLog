@@ -62,4 +62,15 @@
         android:text="Tag 2"
         android:textColor="#FFFFFF"
         android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/researcherLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="Researcher"
+        android:textColor="#000000" />
 </androidx.cardview.widget.CardView>

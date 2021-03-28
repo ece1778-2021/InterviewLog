@@ -12,22 +12,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InterviewLogApp">
+        <activity android:name=".TeamMember"
+            android:label="Member Information"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".team_panel"
-            android:label="@string/title_activity_team_panel"
-            android:theme="@style/Theme.InterviewLogApp.NoActionBar"></activity>
-        <activity android:name=".Replay_Command" />
-        <activity android:name=".RecordingPanel" />
+            android:label="Team Recordings" />
+        <activity android:name=".Replay_Command"
+            android:label="Replay"/>
+        <activity
+            android:name=".RecordingPanel"
+            android:label="My Recordings" />
         <activity android:name=".testActivity" />
         <activity
             android:name=".create_appointment"
+            android:label="Create New Appointment"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Replay"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".Recording" />
+        <activity android:name=".Recording"
+            android:label="Recording"/>
         <activity android:name=".UserPanel" />
-        <activity android:name=".ResearcherPanel" />
+        <activity
+            android:name=".ResearcherPanel"
+            android:label="Schedule" />
         <activity
             android:name=".LoginPage"
             android:label="@string/title_activity_login_page"

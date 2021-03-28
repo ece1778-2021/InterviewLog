@@ -199,6 +199,7 @@ public class Recording extends AppCompatActivity {
                             Map<String, Object> sharedInfo = new HashMap<>();
                             for (int i = 0; i<userTeams.size();i++){
                                 sharedInfo.put("documentID", randomKey);
+                                sharedInfo.put("researcherName", userName);
                                 sharedInfo.put("partName", partName);
                                 sharedInfo.put("tag1",tag1);
                                 sharedInfo.put("tag2",tag2);

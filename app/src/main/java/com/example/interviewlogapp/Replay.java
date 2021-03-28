@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,12 +38,14 @@ public class Replay extends AppCompatActivity {
     private long clip_num;
     String TAG = "replay";
     String tag;
-    int timeStamp;
+    String username, userID;
     RecyclerView clipList;
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> clipNames;
     ArrayList<String> clipTimes;
+    FirebaseAuth fAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,8 @@ public class Replay extends AppCompatActivity {
         Intent intent = getIntent();
         clipNames = new ArrayList<>();
         clipTimes = new ArrayList<>();
+        FirebaseUser user = fAuth.getInstance().getCurrentUser();
+
         record_id = intent.getStringExtra("record_id");
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -60,12 +66,13 @@ public class Replay extends AppCompatActivity {
                         if (documentSnapshot.exists()) {
                             audio = documentSnapshot.getString("storageRef");
                             //Log.d("Debugging", audio);
-                            String username = documentSnapshot.getString("partName");
+                            username = documentSnapshot.getString("partName");
                             TextView Researcher_name = findViewById(R.id.Researcher_name);
                             clip_num = documentSnapshot.getLong("Total_Clip");
                             //clip_num = Integer.valueOf(documentSnapshot.getString("Total_Clip"));
                             Researcher_name.setText(username);
                             setMediaPlayer();
+
 
 
                             for (int i=0; i<clip_num; i++){
@@ -192,6 +199,7 @@ public class Replay extends AppCompatActivity {
 
     public void onBackClick(View view) {
         Intent intent = new Intent(Replay.this,RecordingPanel.class);
+        intent.putExtra("researcherName",username);
         startActivity(intent);
 
     }

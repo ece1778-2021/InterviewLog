@@ -1,6 +1,7 @@
 package com.example.interviewlogapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -8,11 +9,13 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -34,7 +37,7 @@ public class team_panel extends AppCompatActivity {
     TextView teamName;
     FirestoreRecyclerAdapter adapter;
     RecyclerView sharedRecordingList;
-    Button logoutButton, recordingButton, scheduleButton;
+    Button logoutButton, recordingButton, scheduleButton, teamListButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,7 @@ public class team_panel extends AppCompatActivity {
         logoutButton = findViewById(R.id.logoutButton);
         recordingButton = findViewById(R.id.allVoiceButton);
         scheduleButton = findViewById(R.id.scheduleButton);
+        teamListButton = findViewById(R.id.teamListButton);
 
         db = FirebaseFirestore.getInstance();
         userName = intent.getStringExtra("researcherName");
@@ -68,15 +72,22 @@ public class team_panel extends AppCompatActivity {
                 holder.partName.setText(model.getPartName());
                 holder.time.setText(model.getTime());
                 holder.tag1.setText(model.getTag1());
-                holder.tag2.setText(model.getTag2());
+                holder.researcherLabel.setText("by: "+model.getResearcherName());
                 holder.shareRecordCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(team_panel.this,Replay_Command.class);
+                        intent.putExtra("researcherName", userName);
                         intent.putExtra("record_id", model.getDocumentID());
                         startActivity(intent);
                     }
                 });
+                if(model.getTag2().isEmpty()){
+                    holder.tag2.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    holder.tag2.setText(model.getTag2());
+                }
             }
 
             @NonNull
@@ -110,9 +121,29 @@ public class team_panel extends AppCompatActivity {
             }
         });
 
+        teamListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), TeamMember.class);
+                i.putExtra("researcherName", userName);
+                i.putExtra("userTeam", userTeam);
+                startActivity(i);
+                overridePendingTransition(0, 0);
+            }
+        });
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), LoginPage.class));
+            }
+        });
     }
+
+
+
     public class sharedRecordListViewHolder extends RecyclerView.ViewHolder{
-        private TextView partName, tag1, tag2, time;
+        private TextView partName, tag1, tag2, time, researcherLabel;
         private CardView shareRecordCard;
         public sharedRecordListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,6 +151,7 @@ public class team_panel extends AppCompatActivity {
             tag1 = itemView.findViewById(R.id.shareTag1);
             tag2 = itemView.findViewById(R.id.shareTag2);
             time = itemView.findViewById(R.id.shareTimeDisplay);
+            researcherLabel = itemView.findViewById(R.id.researcherLabel);
             shareRecordCard = itemView.findViewById(R.id.sharedRecordCard);
         }
     }

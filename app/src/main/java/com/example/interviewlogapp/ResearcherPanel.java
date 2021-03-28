@@ -103,11 +103,6 @@ public class ResearcherPanel extends AppCompatActivity {
                 holder.partName.setText(model.getPartName());
                 holder.time.setText(model.getTime());
                 holder.tag1.setText(model.getTag1());
-                if(TextUtils.isEmpty(model.getTag2())){
-                    holder.tag2.setBackgroundColor(16777215);
-                    return;
-                }
-                holder.tag2.setText(model.getTag2());
 
                 String currentStatus = model.getStatus();
                 Log.d(TAG, currentStatus);
@@ -131,7 +126,14 @@ public class ResearcherPanel extends AppCompatActivity {
                 else{
                     holder.status.setBackgroundColor(65280);
                     holder.status.setBackgroundColor(Color.GREEN);
-
+                }
+                if(model.getTag2().isEmpty()){
+                    holder.tag2.setBackgroundColor(16777215);
+                    Log.d(TAG,"equals");
+                    return;
+                }
+                else{
+                    holder.tag2.setText(model.getTag2());
                 }
             }
         };
@@ -173,6 +175,7 @@ public class ResearcherPanel extends AppCompatActivity {
                 i.putExtra("researcherName",userName);
                 i.putExtra("userTeam", userTeam);
                 startActivity(i);
+                overridePendingTransition(0, 0);
             }
         });
     }

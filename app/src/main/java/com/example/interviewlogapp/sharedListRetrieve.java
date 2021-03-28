@@ -1,16 +1,17 @@
 package com.example.interviewlogapp;
 
 public class sharedListRetrieve {
-    public String documentID, tag1, tag2, partName, time;
+    public String documentID, tag1, tag2, partName, time, researcherName;
     public sharedListRetrieve(){
     }
 
-    public sharedListRetrieve(String documentID, String tag1, String tag2, String partName, String time) {
+    public sharedListRetrieve(String documentID, String tag1, String tag2, String partName, String time, String researcherName) {
         this.documentID = documentID;
         this.tag1 = tag1;
         this.tag2 = tag2;
         this.partName = partName;
         this.time = time;
+        this.researcherName = researcherName;
     }
 
     public String getDocumentID() {
@@ -51,5 +52,13 @@ public class sharedListRetrieve {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getResearcherName() {
+        return researcherName;
+    }
+
+    public void setResearcherName(String researcherName) {
+        this.researcherName = researcherName;
     }
 }

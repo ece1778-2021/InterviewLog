@@ -58,7 +58,7 @@ public class RecordingPanel extends AppCompatActivity {
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         recordList = findViewById(R.id.recordList);
-
+        Log.d(TAG, "Researcher Name is  " + userName);
         db.collection("team").whereEqualTo("researcherName", userName).get().addOnCompleteListener(this, new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -143,6 +143,7 @@ public class RecordingPanel extends AppCompatActivity {
                 i.putExtra("researcherName",userName);
                 i.putExtra("userTeam", userTeam);
                 startActivity(i);
+                overridePendingTransition(0, 0);
             }
         });
 
