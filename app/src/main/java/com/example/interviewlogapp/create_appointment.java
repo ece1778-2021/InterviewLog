@@ -198,10 +198,14 @@ public class create_appointment extends AppCompatActivity {
                     Toast.makeText(create_appointment.this,"You forgot to add a Tag", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (counter==1){
+                    addPartInfo.put("tag2", "");
+                }
                 addPartInfo.put("researcherName", userName);
                 addPartInfo.put("partName", partName);
                 addPartInfo.put("time", currentTimeDisplay.getText().toString());
                 addPartInfo.put("status", "Not Started");
+                addPartInfo.put("doc_id", documentReference.getId());
                 documentReference.set(addPartInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
