@@ -61,7 +61,7 @@ public class Replay_Command extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        userName = intent.getStringExtra("researcherName");
+        userName = intent.getStringExtra("userName");
         record_id = intent.getStringExtra("record_id");
         ArrayList<String> clipNames = new ArrayList<>();
         ArrayList<String> clipTimes = new ArrayList<>();

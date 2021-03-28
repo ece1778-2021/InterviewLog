@@ -204,7 +204,7 @@ public class create_appointment extends AppCompatActivity {
                 addPartInfo.put("researcherName", userName);
                 addPartInfo.put("partName", partName);
                 addPartInfo.put("time", currentTimeDisplay.getText().toString());
-                addPartInfo.put("status", "Not Started");
+                addPartInfo.put("status", "Completed");
                 addPartInfo.put("doc_id", documentReference.getId());
                 documentReference.set(addPartInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -217,6 +217,7 @@ public class create_appointment extends AppCompatActivity {
                         i.putExtra("time", currentTimeDisplay.getText().toString());
                         i.putExtra("tag1", addPartInfo.get("tag1").toString());
                         i.putExtra("tag1", addPartInfo.get("tag2").toString());
+                        i.putExtra("part_id", documentReference.getId());
                         startActivity(i);
                     }
                 });

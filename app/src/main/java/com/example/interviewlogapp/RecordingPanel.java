@@ -93,9 +93,11 @@ public class RecordingPanel extends AppCompatActivity {
                 holder.tag1.setText(model.getTag1());
                 if(TextUtils.isEmpty(model.getTag2())){
                     holder.tag2.setBackgroundColor(Color.WHITE);
-                    return;
                 }
-                holder.tag2.setText(model.getTag2());
+                else{
+                    holder.tag2.setText(model.getTag2());
+                }
+
                 holder.recordCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

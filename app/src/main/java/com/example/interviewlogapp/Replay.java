@@ -38,7 +38,7 @@ public class Replay extends AppCompatActivity {
     private long clip_num;
     String TAG = "replay";
     String tag;
-    String username, userID;
+    String username, userName;
     RecyclerView clipList;
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
@@ -54,6 +54,7 @@ public class Replay extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         clipList = findViewById(R.id.clipList);
         Intent intent = getIntent();
+        userName = intent.getStringExtra("researcherName");
         clipNames = new ArrayList<>();
         clipTimes = new ArrayList<>();
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
@@ -199,7 +200,7 @@ public class Replay extends AppCompatActivity {
 
     public void onBackClick(View view) {
         Intent intent = new Intent(Replay.this,RecordingPanel.class);
-        intent.putExtra("researcherName",username);
+        intent.putExtra("researcherName",userName);
         startActivity(intent);
 
     }

@@ -54,6 +54,7 @@ public class Recording extends AppCompatActivity {
     private Map<String, Object> note = new HashMap<>();
     //FirebaseAuth fAuth;
     String userName, part_id, partName, time, tag1, tag2;
+    String TAG = "singleRecording";
     List<String> userTeams = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +67,6 @@ public class Recording extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("researcherName");
         part_id = intent.getStringExtra("part_id");
-
-
         partName = intent.getStringExtra("partName");
         time = Calendar.getInstance().getTime().toString();
         tag1 = intent.getStringExtra("tag1");
@@ -178,6 +177,7 @@ public class Recording extends AppCompatActivity {
     }
 
     public void onSaveClick(View view){
+
         String randomKey = UUID.randomUUID().toString();
         StorageReference filepath = reference.child("Audio"+"/"+randomKey);
         Uri uri = Uri.fromFile(new File(output_file));
