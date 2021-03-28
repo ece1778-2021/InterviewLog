@@ -24,9 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="15dp"
         android:onClick="onReplayClick"
-        app:layout_constraintBottom_toTopOf="@+id/clipList"
+        app:layout_constraintBottom_toTopOf="@+id/clip_grid"
         app:layout_constraintStart_toEndOf="@+id/music_play_button"
         app:srcCompat="@android:drawable/ic_media_ff" />
 
@@ -36,9 +36,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="15dp"
         android:onClick="onReplayClick"
-        app:layout_constraintBottom_toTopOf="@+id/clipList"
+        app:layout_constraintBottom_toTopOf="@+id/clip_grid"
         app:layout_constraintStart_toEndOf="@+id/music_stop_button"
         app:srcCompat="@android:drawable/ic_media_play" />
 
@@ -48,9 +48,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="15dp"
         android:onClick="onReplayClick"
-        app:layout_constraintBottom_toTopOf="@+id/clipList"
+        app:layout_constraintBottom_toTopOf="@+id/clip_grid"
         app:layout_constraintStart_toEndOf="@+id/play_back_button"
         app:srcCompat="@android:drawable/ic_media_pause" />
 
@@ -71,9 +71,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginLeft="64dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="15dp"
         android:onClick="onReplayClick"
-        app:layout_constraintBottom_toTopOf="@+id/clipList"
+        app:layout_constraintBottom_toTopOf="@+id/clip_grid"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@android:drawable/ic_media_rew" />
 
@@ -115,9 +115,18 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <GridView
+        android:id="@+id/clip_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:numColumns="1"
+        android:verticalSpacing="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/comment_grid"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <GridView
         android:id="@+id/comment_grid"
         android:layout_width="wrap_content"
-        android:layout_height="211dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="21dp"
         android:numColumns="1"
         android:verticalSpacing="1dp"
@@ -135,16 +144,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/TextCommand"
         app:srcCompat="@android:drawable/ic_menu_send" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/clipList"
-        android:layout_width="389dp"
-        android:layout_height="139dp"
-        android:layout_marginTop="124dp"
-        app:layout_constraintBottom_toTopOf="@+id/comment_grid"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
