@@ -2,8 +2,6 @@ package com.example.interviewlogapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -51,14 +49,9 @@ public class Replay_Command extends AppCompatActivity {
     String userName;
     private int comment_point;
     private ArrayList<Long> Time_List = new ArrayList<Long>();
+    private ArrayList<Integer> Time_List_clip = new ArrayList<Integer>();
     private long clip_num;
-    RecyclerView clipList;
-    RecyclerView.LayoutManager mLayoutManager;
-    RecyclerView.Adapter mAdapter;
-    ArrayList<String> clipNames;
-    ArrayList<String> clipTimes;
     String TAG = "replay";
-    String tag;
 
 
     @Override
@@ -70,9 +63,9 @@ public class Replay_Command extends AppCompatActivity {
         Intent intent = getIntent();
         userName = intent.getStringExtra("userName");
         record_id = intent.getStringExtra("record_id");
-        clipList = findViewById(R.id.clipList);
-        clipNames = new ArrayList<>();
-        clipTimes = new ArrayList<>();
+        ArrayList<String> clipNames = new ArrayList<>();
+        ArrayList<String> clipTimes = new ArrayList<>();
+        GridView clip_gridview = findViewById(R.id.clip_grid);
 
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -83,17 +76,17 @@ public class Replay_Command extends AppCompatActivity {
                             String username = documentSnapshot.getString("partName");
                             clip_num = documentSnapshot.getLong("Total_Clip");
                             for (int i=0; i<clip_num; i++){
-                                tag = documentSnapshot.getString("Clip_Tag"+i);
-                                String time = convertFormat(documentSnapshot.getLong("clip"+i).intValue());
+                                String tag = documentSnapshot.getString("Clip_Tag"+i);
+                                int time_clip = documentSnapshot.getLong("clip"+i).intValue();
+                                String time = convertFormat(time_clip);
                                 clipNames.add(tag);
                                 clipTimes.add(time);
+                                Time_List_clip.add(time_clip);
                             }
-                            Log.d(TAG, "clip names are "+clipNames);
-                            mAdapter = new clipAdapter(clipNames, clipTimes);
-                            mLayoutManager = new LinearLayoutManager(Replay_Command.this);
-                            clipList.setLayoutManager(mLayoutManager);
-                            clipList.setAdapter(mAdapter);
-
+                            //Log.d(TAG, "clip names are "+clipNames);
+                            //Log.d(TAG, "clip times are "+clipTimes);
+                            GridClipAdapter adapter = new GridClipAdapter(clipNames, clipTimes,3,Replay_Command.this);
+                            clip_gridview.setAdapter(adapter);
                             setMediaPlayer();
                         } else {
                             Toast.makeText(Replay_Command.this, "Document does not exist", Toast.LENGTH_LONG).show();
@@ -106,9 +99,21 @@ public class Replay_Command extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //intent.putExtra("imageId",documentlist.get(position));
                 Long t = Time_List.get(position);
                 int postion = t.intValue();
+                //Log.d("Debugging", String.valueOf(t));
+                if (mediaPlayer.isPlaying()) {
+                    TextView PlayerPosition = findViewById(R.id.PlayerPosition);
+                    PlayerPosition.setText(convertFormat(postion));
+                    mediaPlayer.seekTo(postion);
+                }
+            }
+        });
+
+        clip_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int postion = Time_List_clip.get(position);
                 //Log.d("Debugging", String.valueOf(t));
                 if (mediaPlayer.isPlaying()) {
                     TextView PlayerPosition = findViewById(R.id.PlayerPosition);
@@ -308,6 +313,49 @@ public class Replay_Command extends AppCompatActivity {
             textview_time.setText(time);
             textview_user.setText(user_name);
             textview_comment.setText(comment);
+            return convertView;
+        }
+    }
+
+    private class GridClipAdapter extends ArrayAdapter<String> {
+        private ArrayList<String> clipNames;
+        private ArrayList<String> clipTimes;
+        private Context context;
+        private int layoutResource;
+        private LayoutInflater layoutInflater;
+
+        public GridClipAdapter(ArrayList<String> clipNames,ArrayList<String> clipTimes,int layoutResource,Context context){
+            super(context, layoutResource,clipNames);
+            this.clipNames = clipNames;
+            this.clipTimes = clipTimes;
+            this.context = context;
+            this.layoutResource = layoutResource;
+            this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            Log.d("Replay", "Setting successfully");
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Log.d("Replay", "In the get View");
+            if(layoutInflater == null){
+                layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            }
+
+            if(convertView == null){
+                convertView = layoutInflater.inflate(R.layout.clip_list,null);//locate in res/layout/row_item.html
+                //convertView = layoutInflater.inflate(R.layout.comment_item,null);//locate in res/layout/row_item.html
+            }
+
+            TextView textview_timeStamp = convertView.findViewById(R.id.timeStamp);
+            //TextView textview_timeStamp = convertView.findViewById(R.id.textViewUsername);
+            String timeStamp = this.clipTimes.get(position);
+
+            TextView textview_clipName = convertView.findViewById(R.id.clipName);
+            //TextView textview_clipName = convertView.findViewById(R.id.textViewComment);
+            String clipName = this.clipNames.get(position);
+
+            textview_timeStamp.setText(timeStamp);
+            textview_clipName.setText(clipName);
             return convertView;
         }
     }
