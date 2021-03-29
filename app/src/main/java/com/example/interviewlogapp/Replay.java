@@ -199,9 +199,8 @@ public class Replay extends AppCompatActivity {
     }
 
     public void onBackClick(View view) {
-        Intent intent = new Intent(Replay.this,RecordingPanel.class);
+        Intent intent = new Intent(getApplicationContext(),RecordingPanel.class);
         intent.putExtra("researcherName",userName);
         startActivity(intent);
-
     }
 }

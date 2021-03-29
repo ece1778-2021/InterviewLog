@@ -78,6 +78,7 @@ public class team_panel extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(team_panel.this,Replay_Command.class);
                         intent.putExtra("researcherName", userName);
+                        intent.putExtra("userTeam", userTeam);
                         intent.putExtra("record_id", model.getDocumentID());
                         startActivity(intent);
                     }

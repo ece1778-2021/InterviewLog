@@ -46,7 +46,7 @@ public class Replay_Command extends AppCompatActivity {
     private FirebaseFirestore db;
     private String audio;
     private String record_id;
-    String userName;
+    String userName, userTeam;
     private int comment_point;
     private ArrayList<Long> Time_List = new ArrayList<Long>();
     private ArrayList<Integer> Time_List_clip = new ArrayList<Integer>();
@@ -61,7 +61,8 @@ public class Replay_Command extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        userName = intent.getStringExtra("userName");
+        userName = intent.getStringExtra("researcherName");
+        userTeam = intent.getStringExtra("userTeam");
         record_id = intent.getStringExtra("record_id");
         ArrayList<String> clipNames = new ArrayList<>();
         ArrayList<String> clipTimes = new ArrayList<>();
@@ -226,9 +227,11 @@ public class Replay_Command extends AppCompatActivity {
     }
 
     public void onBackClick(View view) {
-        Intent intent = new Intent(Replay_Command.this,RecordingPanel.class);
+        Intent intent = new Intent(Replay_Command.this,team_panel.class);
         intent.putExtra("researcherName",userName);
+        intent.putExtra("userTeam", userTeam);
         startActivity(intent);
+        overridePendingTransition(0, 0);
     }
 
     private void setgridview(GridView gridview) {

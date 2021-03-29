@@ -101,9 +101,9 @@ public class RecordingPanel extends AppCompatActivity {
                 holder.recordCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(RecordingPanel.this,Replay_Command.class);
+                        Intent intent = new Intent(RecordingPanel.this,Replay.class);
                         intent.putExtra("record_id", model.getDocumentID());
-                        intent.putExtra("userName", userName);
+                        intent.putExtra("researcherName", userName);
                         intent.putExtra("audio_location", model.getStorageRef());
                         startActivity(intent);
                     }
