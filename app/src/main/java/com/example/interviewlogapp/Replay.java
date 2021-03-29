@@ -4,13 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +45,13 @@ public class Replay extends AppCompatActivity {
     String TAG = "replay";
     String tag;
     String username, userName;
-    RecyclerView clipList;
+    GridView clipList;
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> clipNames;
     ArrayList<String> clipTimes;
     FirebaseAuth fAuth;
+    private ArrayList<Integer> Time_List_clip = new ArrayList<Integer>();
 
 
     @Override
@@ -82,13 +89,12 @@ public class Replay extends AppCompatActivity {
 
                                 clipNames.add(tag);
                                 clipTimes.add(time);
+                                Time_List_clip.add(documentSnapshot.getLong("clip"+i).intValue());
                                 //Log.d(TAG, "Timestamp "+i + " at " +timeStamp);
                             }
                             Log.d(TAG, "clip names are "+clipNames);
-                            mAdapter = new clipAdapter(clipNames, clipTimes);
-                            mLayoutManager = new LinearLayoutManager(Replay.this);
-                            clipList.setLayoutManager(mLayoutManager);
-                            clipList.setAdapter(mAdapter);
+                            GridClipAdapter adapter = new GridClipAdapter(clipNames, clipTimes,3,Replay.this);
+                            clipList.setAdapter(adapter);
 
                         } else {
                             Toast.makeText(Replay.this, "Document does not exist", Toast.LENGTH_LONG).show();
@@ -96,6 +102,19 @@ public class Replay extends AppCompatActivity {
                     }
                 });
         //audio = "https://firebasestorage.googleapis.com/v0/b/interviewlogapp.appspot.com/o/Audio%2Ftest.3gp?alt=media&token=ec4b473f-c2e9-4784-8558-d9d20a882a66";
+
+        clipList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int postion = Time_List_clip.get(position);
+                //Log.d("Debugging", String.valueOf(t));
+                if (mediaPlayer.isPlaying()) {
+                    TextView PlayerPosition = findViewById(R.id.PlayerPosition);
+                    PlayerPosition.setText(convertFormat(postion));
+                    mediaPlayer.seekTo(postion);
+                }
+            }
+        });
     }
     private void setMediaPlayer(){
         //mediaPlayer.
@@ -199,8 +218,52 @@ public class Replay extends AppCompatActivity {
     }
 
     public void onBackClick(View view) {
-        Intent intent = new Intent(getApplicationContext(),RecordingPanel.class);
+        Intent intent = new Intent(Replay.this,RecordingPanel.class);
         intent.putExtra("researcherName",userName);
         startActivity(intent);
+
+    }
+
+    private class GridClipAdapter extends ArrayAdapter<String> {
+        private ArrayList<String> clipNames;
+        private ArrayList<String> clipTimes;
+        private Context context;
+        private int layoutResource;
+        private LayoutInflater layoutInflater;
+
+        public GridClipAdapter(ArrayList<String> clipNames,ArrayList<String> clipTimes,int layoutResource,Context context){
+            super(context, layoutResource,clipNames);
+            this.clipNames = clipNames;
+            this.clipTimes = clipTimes;
+            this.context = context;
+            this.layoutResource = layoutResource;
+            this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            Log.d("Replay", "Setting successfully");
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Log.d("Replay", "In the get View");
+            if(layoutInflater == null){
+                layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            }
+
+            if(convertView == null){
+                convertView = layoutInflater.inflate(R.layout.clip_list,null);//locate in res/layout/row_item.html
+                //convertView = layoutInflater.inflate(R.layout.comment_item,null);//locate in res/layout/row_item.html
+            }
+
+            TextView textview_timeStamp = convertView.findViewById(R.id.timeStamp);
+            //TextView textview_timeStamp = convertView.findViewById(R.id.textViewUsername);
+            String timeStamp = this.clipTimes.get(position);
+
+            TextView textview_clipName = convertView.findViewById(R.id.clipName);
+            //TextView textview_clipName = convertView.findViewById(R.id.textViewComment);
+            String clipName = this.clipNames.get(position);
+
+            textview_timeStamp.setText(timeStamp);
+            textview_clipName.setText(clipName);
+            return convertView;
+        }
     }
 }

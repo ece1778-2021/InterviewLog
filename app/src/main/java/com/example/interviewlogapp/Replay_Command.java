@@ -23,7 +23,10 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -46,12 +49,13 @@ public class Replay_Command extends AppCompatActivity {
     private FirebaseFirestore db;
     private String audio;
     private String record_id;
-    String userName, userTeam;
+    String userName;
     private int comment_point;
     private ArrayList<Long> Time_List = new ArrayList<Long>();
     private ArrayList<Integer> Time_List_clip = new ArrayList<Integer>();
     private long clip_num;
     String TAG = "replay";
+    FirebaseAuth fAuth;
 
 
     @Override
@@ -61,12 +65,12 @@ public class Replay_Command extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        userName = intent.getStringExtra("researcherName");
-        userTeam = intent.getStringExtra("userTeam");
+        userName = intent.getStringExtra("userName");
         record_id = intent.getStringExtra("record_id");
         ArrayList<String> clipNames = new ArrayList<>();
         ArrayList<String> clipTimes = new ArrayList<>();
         GridView clip_gridview = findViewById(R.id.clip_grid);
+        FirebaseUser user = fAuth.getInstance().getCurrentUser();
 
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -210,14 +214,27 @@ public class Replay_Command extends AppCompatActivity {
     }
 
     public void onCommentClick(View view) {
-        EditText text_comment = findViewById(R.id.TextCommand);
-        String comment = text_comment.getText().toString();
         Map<String, Object> note = new HashMap<>();
-        note.put("time_stamp",comment_point);
-        note.put("Comment",comment);
-        //note.put("User",user);
-        final String randomKey = UUID.randomUUID().toString();
-        db.collection("Recordings").document(record_id).collection("Comments").document(randomKey).set(note);
+        FirebaseUser user = fAuth.getInstance().getCurrentUser();
+        String userID = user.getUid();
+        db.collection("users").document(userID).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String user = documentSnapshot.getString("name");
+                            note.put("Username",user);
+                            EditText text_comment = findViewById(R.id.TextCommand);
+                            String comment = text_comment.getText().toString();
+                            note.put("time_stamp",comment_point);
+                            note.put("Comment",comment);
+                            final String randomKey = UUID.randomUUID().toString();
+                            db.collection("Recordings").document(record_id).collection("Comments").document(randomKey).set(note);
+                        } else {
+                            Toast.makeText(Replay_Command.this, "Document does not exist", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
 
         finish();
         overridePendingTransition(0, 0);
@@ -227,11 +244,9 @@ public class Replay_Command extends AppCompatActivity {
     }
 
     public void onBackClick(View view) {
-        Intent intent = new Intent(Replay_Command.this,team_panel.class);
+        Intent intent = new Intent(Replay_Command.this,RecordingPanel.class);
         intent.putExtra("researcherName",userName);
-        intent.putExtra("userTeam", userTeam);
         startActivity(intent);
-        overridePendingTransition(0, 0);
     }
 
     private void setgridview(GridView gridview) {
@@ -251,14 +266,14 @@ public class Replay_Command extends AppCompatActivity {
                         //Log.d("Debugging", "Task is successful");
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             //Log.d("Debugging", "in the databse");
-                            //String name = document.getString("Username");
+                            String name = document.getString("Username");
                             String comment = document.getString("Comment");
                             //Log.d("Debugging", comment);
                             Long time = document.getLong("time_stamp");
                             String stamp = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(time),
                                     TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
                             //Log.d("Debugging", stamp);
-                            UserNames.add("Username");
+                            UserNames.add(name);
                             Timestamp.add(stamp);
                             Comments.add(comment);
                             Time_List.add(time);
