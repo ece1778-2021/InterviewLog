@@ -105,7 +105,6 @@ public class ResearcherPanel extends AppCompatActivity {
                 holder.tag1.setText(model.getTag1());
 
                 String currentStatus = model.getStatus();
-                Log.d(TAG, currentStatus);
                 holder.status.setText(currentStatus);
                 if (currentStatus.equals("Not Started")){
                     holder.status.setBackgroundColor(Color.RED);
@@ -129,8 +128,6 @@ public class ResearcherPanel extends AppCompatActivity {
                 }
                 if(model.getTag2().isEmpty()){
                     holder.tag2.setBackgroundColor(16777215);
-                    Log.d(TAG,"equals");
-                    return;
                 }
                 else{
                     holder.tag2.setText(model.getTag2());
