@@ -103,6 +103,7 @@ public class RecordingPanel extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(RecordingPanel.this,Replay.class);
                         intent.putExtra("record_id", model.getDocumentID());
+                        intent.putExtra("partName", model.getPartName());
                         intent.putExtra("researcherName", userName);
                         intent.putExtra("audio_location", model.getStorageRef());
                         startActivity(intent);

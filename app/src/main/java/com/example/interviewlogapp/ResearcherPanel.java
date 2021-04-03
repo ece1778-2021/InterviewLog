@@ -2,12 +2,14 @@ package com.example.interviewlogapp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -42,7 +45,7 @@ import javax.annotation.Nonnull;
 
 public class ResearcherPanel extends AppCompatActivity {
     String TAG = "researcher";
-    Button logoutButton, addAppointmentButton, recordingButton, teamButton;
+    Button logoutButton, addAppointmentButton, recordingButton, teamButton, testButton;
     String userID, userTeam, userName, part_id;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
@@ -59,9 +62,11 @@ public class ResearcherPanel extends AppCompatActivity {
         addAppointmentButton = findViewById(R.id.addAppointment);
         recordingButton = findViewById(R.id.allVoiceButton);
         teamButton = findViewById(R.id.teamButton);
+        testButton = findViewById(R.id.testButton);
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         partList = findViewById(R.id.partList);
+
 
         Log.d(TAG, "user name at schedule page is "+userName);
         db.collection("team").whereEqualTo("researcherName", userName).get().addOnCompleteListener(this, new OnCompleteListener<QuerySnapshot>() {
@@ -121,6 +126,34 @@ public class ResearcherPanel extends AppCompatActivity {
                             startActivity(i);
                         }
                     });
+                    holder.partCard.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(ResearcherPanel.this);
+                            alert.setTitle("Delete Warning");
+                            alert.setMessage("Are you sure you want to delete");
+                            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (currentStatus.equals("Not Started")){
+                                        Log.d(TAG, "The part id will be deleting is "+ model.getDoc_id());
+                                        db.collection("participants").document(model.getDoc_id()).delete();
+                                    }
+                                    else{
+                                        Log.d(TAG, "Completed");
+                                    }
+                                }
+                            });
+                            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    overridePendingTransition(0, 0);
+                                }
+                            });
+                            alert.create().show();
+                            return false;
+                        }
+                    });
                 }
                 else{
                     holder.status.setBackgroundColor(65280);
@@ -132,6 +165,7 @@ public class ResearcherPanel extends AppCompatActivity {
                 else{
                     holder.tag2.setText(model.getTag2());
                 }
+
             }
         };
 
@@ -175,12 +209,18 @@ public class ResearcherPanel extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
+
+        testButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.d(TAG, "On Long Click");
+                return false;
+            }
+        });
+
     }
     public void test(View view){
-        Intent i = new Intent(getApplicationContext(), testActivity.class);
-        i.putExtra("researcherName",userName);
-        i.putExtra("userTeam", userTeam);
-        startActivity(i);
+        Log.d(TAG, "Test with on Click");
     }
 
     public void onRecordClick(View view){

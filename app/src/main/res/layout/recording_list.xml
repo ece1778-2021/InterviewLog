@@ -62,4 +62,5 @@
         android:text="Tag 2"
         android:textColor="#FFFFFF"
         android:textSize="14sp" />
+
 </androidx.cardview.widget.CardView>
