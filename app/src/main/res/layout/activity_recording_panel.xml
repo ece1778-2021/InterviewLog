@@ -23,6 +23,8 @@
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
         android:text="Log Out"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +83,23 @@
         app:iconTint="#040404"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/allVoiceButton" />
-
+    <Button
+        android:id="@+id/addAppointment"
+        android:layout_width="51dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="104dp"
+        android:background="@drawable/roundbutton"
+        android:gravity="center_horizontal|top"
+        app:backgroundTint="#F07167"
+        app:icon="@drawable/add"
+        app:iconGravity="top"
+        app:iconPadding="10dp"
+        app:iconSize="30dp"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.927"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recordList"

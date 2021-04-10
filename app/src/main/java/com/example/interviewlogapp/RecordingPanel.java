@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 
 public class RecordingPanel extends AppCompatActivity {
     String TAG = "recording";
-    Button logoutButton, scheduleButton, teamButton;
+    Button logoutButton, scheduleButton, teamButton, addAppointmentButton;
     String userID, userType, userName, userTeam;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
@@ -54,6 +54,7 @@ public class RecordingPanel extends AppCompatActivity {
         userName = getIntent().getStringExtra("researcherName");
         logoutButton = findViewById(R.id.logoutButton);
         scheduleButton = findViewById(R.id.scheduleButton);
+        addAppointmentButton = findViewById(R.id.addAppointment);
         teamButton = findViewById(R.id.teamButton);
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
         userID = user.getUid();
@@ -147,6 +148,14 @@ public class RecordingPanel extends AppCompatActivity {
                 i.putExtra("userTeam", userTeam);
                 startActivity(i);
                 overridePendingTransition(0, 0);
+            }
+        });
+        addAppointmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), create_appointment.class);
+                i.putExtra("researcherName",userName);
+                startActivity(i);
             }
         });
 

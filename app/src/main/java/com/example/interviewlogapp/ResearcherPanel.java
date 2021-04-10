@@ -45,7 +45,7 @@ import javax.annotation.Nonnull;
 
 public class ResearcherPanel extends AppCompatActivity {
     String TAG = "researcher";
-    Button logoutButton, addAppointmentButton, recordingButton, teamButton, testButton;
+    Button logoutButton, addAppointmentButton, recordingButton, teamButton;
     String userID, userTeam, userName, part_id;
     FirebaseAuth fAuth;
     FirebaseFirestore db;
@@ -62,7 +62,6 @@ public class ResearcherPanel extends AppCompatActivity {
         addAppointmentButton = findViewById(R.id.addAppointment);
         recordingButton = findViewById(R.id.allVoiceButton);
         teamButton = findViewById(R.id.teamButton);
-        testButton = findViewById(R.id.testButton);
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         partList = findViewById(R.id.partList);
@@ -210,17 +209,7 @@ public class ResearcherPanel extends AppCompatActivity {
             }
         });
 
-        testButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Log.d(TAG, "On Long Click");
-                return false;
-            }
-        });
 
-    }
-    public void test(View view){
-        Log.d(TAG, "Test with on Click");
     }
 
     public void onRecordClick(View view){
