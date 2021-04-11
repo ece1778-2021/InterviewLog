@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,7 @@ public class Replay_Command extends AppCompatActivity {
     private long clip_num;
     String TAG = "replay";
     FirebaseAuth fAuth;
-
+    private EditText text_test_123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,7 @@ public class Replay_Command extends AppCompatActivity {
         ArrayList<String> clipTimes = new ArrayList<>();
         GridView clip_gridview = findViewById(R.id.clip_grid);
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
+        text_test_123 = findViewById(R.id.TextCommand);
 
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -236,10 +238,8 @@ public class Replay_Command extends AppCompatActivity {
                         }
                     }
                 });
-
         finish();
         overridePendingTransition(0, 0);
-        getIntent().putExtra("researcherName",userName);
         startActivity(getIntent());
         overridePendingTransition(0, 0);
     }
@@ -251,6 +251,42 @@ public class Replay_Command extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(0, 0);
     }
+
+    public void onSpeakClick(View view) {
+        mediaPlayer.pause();
+        handler.removeCallbacks(runnable);
+        comment_point = mediaPlayer.getCurrentPosition();
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US");
+        if(intent.resolveActivity(getPackageManager())!=null){
+            startActivityForResult(intent,10);
+        }else{
+            Toast.makeText(Replay_Command.this, "Your Device Don't Support Speech Input", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        switch(requestCode){
+            case 10:
+                //if(requestCode == RESULT_OK){
+                    //Log.d("Debugging123", "Request code is -1");
+                //}
+                if(data!= null){
+                //if(requestCode == RESULT_OK && data!= null){
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    text_test_123.setText(result.get(0));
+                }
+                break;
+        }
+    }
+
+
+
+
 
     private void setgridview(GridView gridview) {
         Log.d("Debugging", "Setting Grid");
