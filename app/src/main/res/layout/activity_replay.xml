@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:onClick="onReplayClick"
-        android:text="Make clip"
+        android:text="Make Note"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Clip_Tag:"
+        android:text="Note_Tag:"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/Text_Tag_Replay"
         app:layout_constraintHorizontal_bias="0.88"
@@ -142,7 +142,6 @@
         android:layout_width="194dp"
         android:layout_height="65dp"
         android:layout_marginTop="32dp"
-        android:text="TimeStamp"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.152"
@@ -171,18 +170,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.027" />
-
-    <Button
-        android:id="@+id/deleteRecording"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        app:backgroundTint="#FF0000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

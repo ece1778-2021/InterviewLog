@@ -60,7 +60,7 @@
         android:layout_marginLeft="130dp"
         android:layout_marginBottom="27dp"
         android:onClick="onRecordingClick"
-        android:text="Make_clip"
+        android:text="Make Note"
         app:layout_constraintBottom_toTopOf="@+id/stop_button"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -97,7 +97,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="264dp"
-        android:text="Clip_Tag:"
+        android:text="Note Tag:"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/record_button"
         app:layout_constraintStart_toStartOf="parent" />
