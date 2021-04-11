@@ -50,12 +50,16 @@ public class Recording extends AppCompatActivity {
     private Chronometer timer;
     private FirebaseStorage storage;
     private StorageReference reference;
+<<<<<<< Updated upstream
     private FirebaseFirestore db;
     private Map<String, Object> note = new HashMap<>();
     //FirebaseAuth fAuth;
     String userName, part_id, partName, time, tag1, tag2;
     String TAG = "singleRecording";
     List<String> userTeams = new ArrayList<String>();
+=======
+    String TAG = "recording";
+>>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +67,7 @@ public class Recording extends AppCompatActivity {
         timer = findViewById(R.id.time_count);
         storage = FirebaseStorage.getInstance();
         reference = storage.getReference();
+<<<<<<< Updated upstream
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
         userName = intent.getStringExtra("researcherName");
@@ -91,6 +96,13 @@ public class Recording extends AppCompatActivity {
     private String convertFormat(long duration){
         return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+=======
+
+        String userName = getIntent().getStringExtra("researcherName");
+        String partName = getIntent().getStringExtra("partName");
+        Log.d(TAG,"The name pass is "+ partName);
+
+>>>>>>> Stashed changes
     }
 
     public void onRecordingClick(View view){
