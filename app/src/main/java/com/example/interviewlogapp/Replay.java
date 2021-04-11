@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.SeekBar;
@@ -27,9 +26,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,10 +42,9 @@ public class Replay extends AppCompatActivity {
     private String audio;
     private String record_id;
     private long clip_num;
-    Button deleteRecording;
     String TAG = "replay";
     String tag;
-    String username, userName, partName, partID, shareRecordID;
+    String username, userName;
     GridView clipList;
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
@@ -65,15 +60,13 @@ public class Replay extends AppCompatActivity {
         setContentView(R.layout.activity_replay);
         db = FirebaseFirestore.getInstance();
         clipList = findViewById(R.id.clipList);
-        deleteRecording = findViewById(R.id.deleteRecording);
         Intent intent = getIntent();
         userName = intent.getStringExtra("researcherName");
         clipNames = new ArrayList<>();
         clipTimes = new ArrayList<>();
         FirebaseUser user = fAuth.getInstance().getCurrentUser();
-        record_id = intent.getStringExtra("record_id");
-        partName = intent.getStringExtra("partName");
 
+        record_id = intent.getStringExtra("record_id");
         db.collection("Recordings").document(record_id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -120,38 +113,6 @@ public class Replay extends AppCompatActivity {
                     PlayerPosition.setText(convertFormat(postion));
                     mediaPlayer.seekTo(postion);
                 }
-            }
-        });
-        Query query = db.collection("participants").whereEqualTo("partName", partName);
-        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
-                    partID = documentSnapshot.getId();
-                    Log.d(TAG, "partID at participants "+ partID);
-                }
-            }
-        });
-        query = db.collection("sharedRecordings").whereEqualTo("documentID", record_id);
-        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots){
-                    shareRecordID = documentSnapshot.getId();
-                    Log.d(TAG, "shared Record id at sharedRecordings "+ shareRecordID);
-                }
-            }
-        });
-        deleteRecording.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                db.collection("Recordings").document(record_id).delete();
-                db.collection("sharedRecordings").document(shareRecordID).delete();
-                db.collection("participants").document(partID).update("status", "Not Started");
-                Intent intent = new Intent(Replay.this,RecordingPanel.class);
-                intent.putExtra("researcherName",userName);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
             }
         });
     }
@@ -237,9 +198,10 @@ public class Replay extends AppCompatActivity {
             int currentPosition = mediaPlayer.getCurrentPosition();
             EditText text_tag = findViewById(R.id.Text_Tag_Replay);
             String tag = text_tag.getText().toString();
+
             TextView txtUsername = findViewById(R.id.Text_tag);
-            txtUsername.setText(tag+" "+ String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(currentPosition),
-                    TimeUnit.MILLISECONDS.toSeconds(currentPosition) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentPosition))));
+            //txtUsername.setText(tag+" "+ String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(currentPosition),
+                    //TimeUnit.MILLISECONDS.toSeconds(currentPosition) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentPosition))));
 
             Map<String, Object> note = new HashMap<>();
             String tag_name = "Clip_Tag"+String.valueOf(clip_num);
