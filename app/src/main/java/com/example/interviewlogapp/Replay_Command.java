@@ -233,6 +233,7 @@ public class Replay_Command extends AppCompatActivity {
                             note.put("Comment",comment);
                             final String randomKey = UUID.randomUUID().toString();
                             db.collection("Recordings").document(record_id).collection("Comments").document(randomKey).set(note);
+                            startActivity(getIntent());
                         } else {
                             Toast.makeText(Replay_Command.this, "Document does not exist", Toast.LENGTH_LONG).show();
                         }
