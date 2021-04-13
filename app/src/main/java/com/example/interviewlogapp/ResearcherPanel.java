@@ -111,7 +111,7 @@ public class ResearcherPanel extends AppCompatActivity {
                 String currentStatus = model.getStatus();
                 holder.status.setText(currentStatus);
                 if (currentStatus.equals("Not Started")){
-                    holder.status.setBackgroundColor(Color.RED);
+                    holder.status.setBackgroundColor(Color.parseColor("#F07167"));
                     holder.partCard.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -156,7 +156,7 @@ public class ResearcherPanel extends AppCompatActivity {
                 }
                 else{
                     holder.status.setBackgroundColor(65280);
-                    holder.status.setBackgroundColor(Color.GREEN);
+                    holder.status.setBackgroundColor(Color.GRAY);
                 }
                 if(model.getTag2().isEmpty()){
                     holder.tag2.setBackgroundColor(16777215);
